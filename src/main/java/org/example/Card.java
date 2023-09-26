@@ -98,9 +98,9 @@ public class Card {
     }
 
     public boolean isPoisoned(){
-        if (POISON_VALUES.containsKey(this.suit)){
+        if (this.type == CardType.BASIC){
             return POISON_VALUES.get(this.suit).contains(this.value);
         }
-        return true;
+        return false;
     }
 }
