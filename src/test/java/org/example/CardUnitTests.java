@@ -2,8 +2,11 @@ package org.example;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CardUnitTests {
     @Test
@@ -50,4 +53,21 @@ class CardUnitTests {
         Card card = new Card(CardType.ALCHEMY, CardSuit.ANY, 1);
         assertThrows(IllegalArgumentException.class, () -> card.setValue(0));
     }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 005: Non-Basic Cards can have suit changed.")
+    @EnumSource(
+            value = CardType.class,
+            mode = EnumSource.Mode.EXCLUDE,
+            names = {"BASIC"}
+    )
+    void testChangeNonBasicCardSuit(CardType testType){
+        Card card = new Card(testType, CardSuit.SWORDS, 1);
+        for (CardSuit newSuit : CardSuit.values()){
+            card.changeSuit(newSuit);
+            assertEquals(newSuit, card.getSuit());
+        }
+    }
+
+
 }

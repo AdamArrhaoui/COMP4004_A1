@@ -56,6 +56,10 @@ public class Card {
         this.suit = suit;
     }
 
+    public void changeSuit(CardSuit suit){
+
+    }
+
     public int getValue() {
         return value;
     }
