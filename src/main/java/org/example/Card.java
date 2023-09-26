@@ -1,6 +1,8 @@
 package org.example;
 
 public class Card {
+    static final int MIN_VALUE = 1;
+    static final int MAX_VALUE = 15;
 
     private CardType type;
     private CardSuit suit;
@@ -39,6 +41,12 @@ public class Card {
     }
 
     public void setValue(int value) {
+
+        if (value != 0){
+            if(value < MIN_VALUE || value > MAX_VALUE){
+                throw new IllegalArgumentException("Cannot set card value out of allowed range!");
+            }
+        }
         this.value = value;
     }
 
