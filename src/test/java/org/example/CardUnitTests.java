@@ -90,4 +90,11 @@ class CardUnitTests {
         assertThrows(IllegalStateException.class, () -> card.changeSuit(CardSuit.SORCERY));
         assertThrows(IllegalStateException.class, () -> card.changeValue(2));
     }
+
+    @Test
+    @DisplayName("U-TEST 008: Alchemy card cannot have it's value changed")
+    void testLimitAlchemyCardValueChange(){
+        Card card = new Card(CardType.ALCHEMY, CardSuit.ANY, 1);
+        assertThrows(IllegalStateException.class, () -> card.changeValue(2));
+    }
 }
