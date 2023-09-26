@@ -7,6 +7,9 @@ public class Card {
     private int value;
 
     Card(CardType t, CardSuit s, int val){
+        setType(t);
+        setSuit(s);
+        setValue(val);
     }
 
     public CardType getType() {
@@ -14,6 +17,9 @@ public class Card {
     }
 
     public void setType(CardType type) {
+        if (type == null){
+            throw new IllegalArgumentException("CardType cannot be null!");
+        }
         this.type = type;
     }
 
@@ -22,6 +28,9 @@ public class Card {
     }
 
     public void setSuit(CardSuit suit) {
+        if (suit == null){
+            throw new IllegalArgumentException("CardSuit cannot be null!");
+        }
         this.suit = suit;
     }
 
