@@ -98,6 +98,9 @@ public class Card {
     }
 
     public boolean isPoisoned(){
+        if (POISON_VALUES.containsKey(this.suit)){
+            return POISON_VALUES.get(this.suit).contains(this.value);
+        }
         return true;
     }
 }
