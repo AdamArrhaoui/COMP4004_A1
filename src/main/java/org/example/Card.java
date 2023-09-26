@@ -8,6 +8,23 @@ public class Card {
     private CardSuit suit;
     private int value;
 
+    /**
+     * Creates new BASIC card with suit and value
+     * @param s non-ANY suit
+     * @param val non-zero value
+     */
+    Card(CardSuit s, int val) {
+        setType(CardType.BASIC);
+        setSuit(s);
+        setValue(val);
+    }
+
+    /**
+     * Creates new card with given type, suit, and value
+     * @param t non-null CardType
+     * @param s non-null CardSuit
+     * @param val card value
+     */
     Card(CardType t, CardSuit s, int val){
         setType(t);
         setSuit(s);
