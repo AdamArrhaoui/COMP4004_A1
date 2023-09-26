@@ -78,4 +78,7 @@ public class Card {
         this.value = value;
     }
 
+    public void changeValue(int value){
+
+    }
 }

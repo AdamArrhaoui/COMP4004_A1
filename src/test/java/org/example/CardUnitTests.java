@@ -69,5 +69,18 @@ class CardUnitTests {
         }
     }
 
+    @ParameterizedTest
+    @DisplayName("U-TEST 006: Merlin or Apprentice cards can have value changed.")
+    @EnumSource(
+            value = CardType.class,
+            names = {"MERLIN", "APPRENTICE"}
+    )
+    void testChangeMerlinApprenticeValue(CardType testType){
+        Card card = new Card(testType, CardSuit.ANY, 0);
+        for (int i = Card.MIN_VALUE; i <= Card.MAX_VALUE; ++i){
+            card.changeValue(i);
+            assertEquals(i, card.getValue());
+        }
+    }
 
 }
