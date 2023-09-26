@@ -42,4 +42,12 @@ class CardUnitTests {
         assertThrows(IllegalArgumentException.class, () -> card.setValue(0));
         assertThrows(IllegalArgumentException.class, () -> card.setSuit(CardSuit.ANY));
     }
+
+    @Test
+    @DisplayName("U-TEST 004: New alchemy cards have non-zero value.")
+    void testAlchemyCardValueLimits(){
+        assertThrows(IllegalArgumentException.class, () -> new Card(CardType.ALCHEMY, CardSuit.ANY, 0));
+        Card card = new Card(CardType.ALCHEMY, CardSuit.ANY, 1);
+        assertThrows(IllegalArgumentException.class, () -> card.setValue(0));
+    }
 }
