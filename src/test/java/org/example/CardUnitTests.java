@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CardUnitTests {
     @Test
@@ -109,6 +108,22 @@ class CardUnitTests {
         for (int i = Card.MIN_VALUE; i <= Card.MAX_VALUE; ++i){
             Card card = new Card(testSuit, i);
             assertEquals(Card.POISON_VALUES.get(testSuit).contains(i), card.isPoisoned());
+        }
+    }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 010: Non-basic cards never poisoned")
+    @EnumSource(
+            value = CardType.class,
+            mode = EnumSource.Mode.EXCLUDE,
+            names = {"BASIC"}
+    )
+    void testNonBasicCardPoison(CardType testType){
+        for (CardSuit testSuit : CardSuit.values()){
+            for (int i = Card.MIN_VALUE; i <= Card.MAX_VALUE; ++i){
+                Card card = new Card(testType, testSuit, i);
+                assertFalse(card.isPoisoned());
+            }
         }
     }
 }
