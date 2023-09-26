@@ -83,4 +83,11 @@ class CardUnitTests {
         }
     }
 
+    @Test
+    @DisplayName("U-TEST 007: Basic card cannot have it's suit or value changed")
+    void testLimitBasicCardChanges(){
+        Card card = new Card(CardSuit.SWORDS, 1);
+        assertThrows(IllegalStateException.class, () -> card.changeSuit(CardSuit.SORCERY));
+        assertThrows(IllegalStateException.class, () -> card.changeValue(2));
+    }
 }
