@@ -79,6 +79,6 @@ public class Card {
     }
 
     public void changeValue(int value){
-
+        setValue(value);
     }
 }
