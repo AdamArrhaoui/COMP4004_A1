@@ -68,6 +68,8 @@ public class Card {
             }
         } else if (this.type == CardType.BASIC){
             throw new IllegalArgumentException("Basic cards cannot have a value of 0!");
+        } else if (this.type == CardType.ALCHEMY){
+            throw new IllegalArgumentException("Alchemy cards cannot have a value of 0!");
         }
         this.value = value;
     }
