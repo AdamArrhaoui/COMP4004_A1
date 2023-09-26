@@ -50,6 +50,9 @@ public class Card {
         if (suit == null){
             throw new IllegalArgumentException("CardSuit cannot be null!");
         }
+        if (this.type == CardType.BASIC && suit == CardSuit.ANY){
+            throw new IllegalArgumentException("Basic cards must have non-ANY suit!");
+        }
         this.suit = suit;
     }
 
@@ -63,6 +66,8 @@ public class Card {
             if(value < MIN_VALUE || value > MAX_VALUE){
                 throw new IllegalArgumentException("Cannot set card value out of allowed range!");
             }
+        } else if (this.type == CardType.BASIC){
+            throw new IllegalArgumentException("Basic cards cannot have a value of 0!");
         }
         this.value = value;
     }
