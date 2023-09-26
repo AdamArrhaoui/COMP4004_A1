@@ -1,8 +1,17 @@
 package org.example;
 
+import java.util.Map;
+import java.util.Set;
+
 public class Card {
     static final int MIN_VALUE = 1;
     static final int MAX_VALUE = 15;
+    static final Map<CardSuit, Set<Integer>> POISON_VALUES = Map.of(
+            CardSuit.SWORDS, Set.of(6, 7, 8, 9),
+            CardSuit.ARROWS, Set.of(8, 9, 10, 11),
+            CardSuit.SORCERY, Set.of(5, 6, 11, 12),
+            CardSuit.DECEPTION, Set.of(6, 7, 9, 10)
+    );
 
     private CardType type;
     private CardSuit suit;
@@ -86,5 +95,9 @@ public class Card {
             throw new IllegalStateException("Basic and Alchemy cards cannot have their value changed!");
         }
         setValue(value);
+    }
+
+    public boolean isPoisoned(){
+        return true;
     }
 }

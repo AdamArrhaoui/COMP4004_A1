@@ -97,4 +97,18 @@ class CardUnitTests {
         Card card = new Card(CardType.ALCHEMY, CardSuit.ANY, 1);
         assertThrows(IllegalStateException.class, () -> card.changeValue(2));
     }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 009: Basic cards correctly poisoned")
+    @EnumSource(
+            value = CardSuit.class,
+            mode = EnumSource.Mode.EXCLUDE,
+            names = {"ANY"}
+    )
+    void testBasicCardPoison(CardSuit testSuit){
+        for (int i = Card.MIN_VALUE; i <= Card.MAX_VALUE; ++i){
+            Card card = new Card(testSuit, i);
+            assertEquals(Card.POISON_VALUES.get(testSuit).contains(i), card.isPoisoned());
+        }
+    }
 }
