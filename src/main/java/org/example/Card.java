@@ -57,6 +57,9 @@ public class Card {
     }
 
     public void changeSuit(CardSuit suit){
+        if (this.type == CardType.BASIC){
+            throw new IllegalStateException("Basic cards cannot have their suit changed!");
+        }
         setSuit(suit);
     }
 
@@ -79,6 +82,9 @@ public class Card {
     }
 
     public void changeValue(int value){
+        if (this.type == CardType.BASIC){
+            throw new IllegalStateException("Basic cards cannot have their value changed!");
+        }
         setValue(value);
     }
 }
