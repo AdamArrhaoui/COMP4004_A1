@@ -57,7 +57,7 @@ public class Card {
     }
 
     public void changeSuit(CardSuit suit){
-
+        setSuit(suit);
     }
 
     public int getValue() {
