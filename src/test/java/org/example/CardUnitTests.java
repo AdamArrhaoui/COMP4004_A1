@@ -141,4 +141,19 @@ class CardUnitTests {
             assertEquals(5, card.getInjuryPoints());
         }
     }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 012: Poisoned basic cards inflict 10 injury points")
+    @EnumSource(
+            value = CardSuit.class,
+            mode = EnumSource.Mode.EXCLUDE,
+            names = {"ANY"}
+    )
+    void testBasicPoisonDamage(CardSuit testSuit){
+        for (int i = Card.MIN_VALUE; i <= Card.MAX_VALUE; ++i){
+            if (!Card.POISON_VALUES.get(testSuit).contains(i)) continue;
+            Card card = new Card(testSuit, i);
+            assertEquals(10, card.getInjuryPoints());
+        }
+    }
 }
