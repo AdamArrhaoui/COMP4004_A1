@@ -105,6 +105,6 @@ public class Card {
     }
 
     public int getInjuryPoints(){
-        return 0;
+        return 5;
     }
 }
