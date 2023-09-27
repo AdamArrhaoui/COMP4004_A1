@@ -44,4 +44,15 @@ class DeckUnitTests {
         assertNotNull(card.getDeck());
         assertEquals(deck, card.getDeck());
     }
+
+    @Test
+    @DisplayName("U-TEST 020: Card removed from Deck gets removed from Deck's cardList")
+    void testCardRemovedFromCardList(){
+        Deck deck = new Deck();
+        Card card = new Card(CardSuit.SWORDS, 1);
+        deck.addCard(card);
+        deck.removeCard(card);
+        assertFalse(deck.getCards().contains(card));
+        assertEquals(0, deck.getCards().size());
+    }
 }

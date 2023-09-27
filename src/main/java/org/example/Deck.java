@@ -19,4 +19,7 @@ public class Deck {
         cards.add(card);
         card.setDeck(this);
     }
+
+    public void removeCard(Card card) {
+    }
 }
