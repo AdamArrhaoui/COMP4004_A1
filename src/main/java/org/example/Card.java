@@ -103,4 +103,8 @@ public class Card {
         }
         return false;
     }
+
+    public int getInjuryPoints(){
+        return 0;
+    }
 }

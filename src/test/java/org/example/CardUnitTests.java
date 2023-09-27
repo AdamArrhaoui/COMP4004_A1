@@ -126,4 +126,19 @@ class CardUnitTests {
             }
         }
     }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 011: Non-poisoned basic cards inflict 5 injury points")
+    @EnumSource(
+            value = CardSuit.class,
+            mode = EnumSource.Mode.EXCLUDE,
+            names = {"ANY"}
+    )
+    void testBasicNonPoisonDamage(CardSuit testSuit){
+        for (int i = Card.MIN_VALUE; i <= Card.MAX_VALUE; ++i){
+            if (Card.POISON_VALUES.get(testSuit).contains(i)) continue;
+            Card card = new Card(testSuit, i);
+            assertEquals(5, card.getInjuryPoints());
+        }
+    }
 }
