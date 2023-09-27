@@ -112,7 +112,7 @@ public class Card {
                 } else {
                     return 5;
                 }
-            case ALCHEMY:
+            case ALCHEMY, APPRENTICE:
                 return 5;
             case MERLIN:
                 return 25;
