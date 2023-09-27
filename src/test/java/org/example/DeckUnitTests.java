@@ -65,4 +65,17 @@ class DeckUnitTests {
         deck.removeCard(card);
         assertNull(card.getDeck());
     }
+
+    @Test
+    @DisplayName("U-TEST 022: Card from existing Deck gets removed from old Deck before adding to new Deck")
+    void testCardAddMoveBetweenDecks(){
+        Deck deck1 = new Deck();
+        Deck deck2 = new Deck();
+        Card card = new Card(CardSuit.SWORDS, 1);
+        deck1.addCard(card);
+        deck2.addCard(card);
+        assertFalse(deck1.getCards().contains(card));
+        assertTrue(deck2.getCards().contains(card));
+        assertEquals(deck2, card.getDeck());
+    }
 }
