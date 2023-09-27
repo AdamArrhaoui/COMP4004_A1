@@ -55,4 +55,14 @@ class DeckUnitTests {
         assertFalse(deck.getCards().contains(card));
         assertEquals(0, deck.getCards().size());
     }
+
+    @Test
+    @DisplayName("U-TEST 021: Removing card from Deck resets the card's Deck reference to null")
+    void testCardDeckReferenceNullOnRemove(){
+        Deck deck = new Deck();
+        Card card = new Card(CardSuit.SWORDS, 1);
+        deck.addCard(card);
+        deck.removeCard(card);
+        assertNull(card.getDeck());
+    }
 }
