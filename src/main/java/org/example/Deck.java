@@ -21,5 +21,6 @@ public class Deck {
     }
 
     public void removeCard(Card card) {
+        cards.remove(card);
     }
 }
