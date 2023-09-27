@@ -112,6 +112,8 @@ public class Card {
                 } else {
                     return 5;
                 }
+            case ALCHEMY:
+                return 5;
             default:
                 return 0;
         }
