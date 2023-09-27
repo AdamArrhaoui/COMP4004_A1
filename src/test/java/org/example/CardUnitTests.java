@@ -176,4 +176,14 @@ class CardUnitTests {
             assertEquals(25, card.getInjuryPoints());
         }
     }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 015: Apprentice cards inflict 5 injury points")
+    @EnumSource(value = CardSuit.class)
+    void testApprenticeDamage(CardSuit testSuit){
+        for (int i = 0; i <= Card.MAX_VALUE; ++i){
+            Card card = new Card(CardType.APPRENTICE, testSuit, i);
+            assertEquals(5, card.getInjuryPoints());
+        }
+    }
 }
