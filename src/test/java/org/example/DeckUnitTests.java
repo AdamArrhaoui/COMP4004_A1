@@ -16,4 +16,14 @@ class DeckUnitTests {
         assertNotNull(deckCards);
         assertEquals(0, deckCards.size());
     }
+
+    @Test
+    @DisplayName("U-TEST 017: Card added to Deck gets stored in Deck's cardList")
+    void testAddCardStoredInDeck(){
+        Deck deck = new Deck();
+        Card card = new Card(CardSuit.SWORDS, 1);
+        deck.addCard(card);
+        assertTrue(deck.getCards().contains(card));
+        assertEquals(1, deck.getCards().size());
+    }
 }

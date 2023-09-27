@@ -13,4 +13,7 @@ public class Deck {
     public ArrayList<Card> getCards() {
         return cards;
     }
+
+    public void addCard(Card card) {
+    }
 }
