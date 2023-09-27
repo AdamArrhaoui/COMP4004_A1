@@ -26,4 +26,12 @@ class DeckUnitTests {
         assertTrue(deck.getCards().contains(card));
         assertEquals(1, deck.getCards().size());
     }
+
+    @Test
+    @DisplayName("U-TEST 018: Cannot add null card to Deck")
+    void testAddNullCard(){
+        Deck deck = new Deck();
+        assertThrows(IllegalArgumentException.class ,() ->deck.addCard(null));
+        assertEquals(0, deck.getCards().size());
+    }
 }
