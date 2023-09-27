@@ -17,5 +17,6 @@ public class Deck {
     public void addCard(Card card) {
         if (card == null) throw new IllegalArgumentException("Cannot add null card to deck!");
         cards.add(card);
+        card.setDeck(this);
     }
 }

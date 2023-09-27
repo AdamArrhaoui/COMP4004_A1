@@ -102,6 +102,10 @@ public class Card {
         return deck;
     }
 
+    public void setDeck(Deck newDeck){
+        this.deck = newDeck;
+    }
+
     public boolean isPoisoned(){
         if (this.type == CardType.BASIC){
             return POISON_VALUES.get(this.suit).contains(this.value);
