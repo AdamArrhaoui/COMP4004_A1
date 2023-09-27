@@ -114,6 +114,8 @@ public class Card {
                 }
             case ALCHEMY:
                 return 5;
+            case MERLIN:
+                return 25;
             default:
                 return 0;
         }
