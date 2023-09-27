@@ -156,4 +156,14 @@ class CardUnitTests {
             assertEquals(10, card.getInjuryPoints());
         }
     }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 013: Alchemy cards inflict 5 injury points")
+    @EnumSource(value = CardSuit.class)
+    void testAlchemyDamage(CardSuit testSuit){
+        for (int i = Card.MIN_VALUE; i <= Card.MAX_VALUE; ++i){
+            Card card = new Card(CardType.ALCHEMY, testSuit, i);
+            assertEquals(5, card.getInjuryPoints());
+        }
+    }
 }
