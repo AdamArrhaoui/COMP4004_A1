@@ -166,4 +166,14 @@ class CardUnitTests {
             assertEquals(5, card.getInjuryPoints());
         }
     }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 014: Merlin cards inflict 25 injury points")
+    @EnumSource(value = CardSuit.class)
+    void testMerlinDamage(CardSuit testSuit){
+        for (int i = 0; i <= Card.MAX_VALUE; ++i){
+            Card card = new Card(CardType.MERLIN, testSuit, i);
+            assertEquals(25, card.getInjuryPoints());
+        }
+    }
 }
