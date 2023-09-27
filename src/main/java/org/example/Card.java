@@ -105,6 +105,16 @@ public class Card {
     }
 
     public int getInjuryPoints(){
-        return 5;
+        switch (type){
+            case BASIC:
+                if(isPoisoned()){
+                    return 10;
+                } else {
+                    return 5;
+                }
+            default:
+                return 0;
+        }
+
     }
 }
