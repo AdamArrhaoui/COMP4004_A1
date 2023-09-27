@@ -16,6 +16,7 @@ public class Card {
     private CardType type;
     private CardSuit suit;
     private int value;
+    private Deck deck;
 
     /**
      * Creates new BASIC card with suit and value
@@ -95,6 +96,10 @@ public class Card {
             throw new IllegalStateException("Basic and Alchemy cards cannot have their value changed!");
         }
         setValue(value);
+    }
+
+    public Deck getDeck() {
+        return deck;
     }
 
     public boolean isPoisoned(){

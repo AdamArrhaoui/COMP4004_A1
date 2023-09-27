@@ -34,4 +34,14 @@ class DeckUnitTests {
         assertThrows(IllegalArgumentException.class ,() ->deck.addCard(null));
         assertEquals(0, deck.getCards().size());
     }
+
+    @Test
+    @DisplayName("U-TEST 019: Adding card to Deck updates the card's Deck reference to the new Deck")
+    void testCardDeckReferenceUpdateOnAdd(){
+        Deck deck = new Deck();
+        Card card = new Card(CardSuit.SWORDS, 1);
+        deck.addCard(card);
+        assertNotNull(card.getDeck());
+        assertEquals(deck, card.getDeck());
+    }
 }
