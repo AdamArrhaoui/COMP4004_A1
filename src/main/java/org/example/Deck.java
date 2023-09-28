@@ -10,6 +10,10 @@ public class Deck {
         cards = new ArrayList<>();
     }
 
+    public Deck(Iterable<Card> cardIterable){
+        this();
+    }
+
     public ArrayList<Card> getCards() {
         return cards;
     }

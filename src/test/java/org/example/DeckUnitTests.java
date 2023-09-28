@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -77,5 +78,21 @@ class DeckUnitTests {
         assertFalse(deck1.getCards().contains(card));
         assertTrue(deck2.getCards().contains(card));
         assertEquals(deck2, card.getDeck());
+    }
+
+    @Test
+    @DisplayName("U-TEST 023: New Deck created from list of cards contains all given cards.")
+    void testDeckConstructorFromCardList(){
+        List<Card> cards = new ArrayList<Card>(List.of(
+                new Card(CardSuit.SWORDS, 1),
+                new Card(CardSuit.ARROWS, 2),
+                new Card(CardSuit.SORCERY, 3)
+        ));
+
+        Deck deck = new Deck(cards);
+        assertArrayEquals(cards.toArray(), deck.getCards().toArray());
+        for (Card card: cards) {
+            assertSame(deck, card.getDeck());
+        }
     }
 }
