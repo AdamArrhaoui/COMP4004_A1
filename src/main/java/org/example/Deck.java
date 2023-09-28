@@ -12,6 +12,7 @@ public class Deck {
 
     public Deck(Iterable<Card> cardIterable){
         this();
+        cardIterable.forEach(this::addCard);
     }
 
     public ArrayList<Card> getCards() {
