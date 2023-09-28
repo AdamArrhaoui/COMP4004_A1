@@ -15,4 +15,7 @@ public class CardGenerator {
         return Stream.generate(() -> new Card(type, suit, value)).limit(n);
     }
 
+    public static Stream<Card> generateBasicCards(int n, CardSuit suit){
+        return null;
+    }
 }

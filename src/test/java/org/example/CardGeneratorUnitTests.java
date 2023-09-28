@@ -2,6 +2,7 @@ package org.example;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.HashSet;
@@ -37,5 +38,23 @@ class CardGeneratorUnitTests {
         // Test that each card is distinct in memory
         Set<Card> cardSet = new HashSet<>(cardList);
         assertEquals(numCards, cardSet.size());
+    }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 025: CardGenerator creates stream of n basic cards of specified suit ordered by values 1-15 repeating")
+    @EnumSource(
+            value = CardSuit.class,
+            mode = EnumSource.Mode.EXCLUDE,
+            names = {"ANY"}
+    )
+    void testBasicCardStreamSpecificSuit(CardSuit suit) {
+        List<Card> cardList = CardGenerator.generateBasicCards(32, suit).toList();
+        for (int i = 0; i < 32 ; i++) {
+            int expectedValue = i % Card.MAX_VALUE + 1;
+            Card currentCard = cardList.get(i);
+            assertEquals(CardType.BASIC, currentCard.getType());
+            assertEquals(suit, currentCard.getSuit());
+            assertEquals(expectedValue, currentCard.getValue());
+        }
     }
 }
