@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class CardGenerator {
@@ -16,6 +17,7 @@ public class CardGenerator {
     }
 
     public static Stream<Card> generateBasicCards(int n, CardSuit suit){
-        return null;
+        AtomicInteger i = new AtomicInteger();
+        return Stream.generate(() -> new Card(suit, i.getAndIncrement()%Card.MAX_VALUE + 1)).limit(n);
     }
 }
