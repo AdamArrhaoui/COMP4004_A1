@@ -106,4 +106,15 @@ class DeckUnitTests {
             assertTrue(allCards.get(i).cardEquals(deck.getCards().get(i)));
         }
     }
+
+    @Test
+    @DisplayName("U-TEST 030: Deck can shuffle card order")
+    void testDeckShuffle(){
+        Deck deck = Deck.FullDeck();
+        ArrayList<Card> originalCardArray = new ArrayList<Card>(deck.getCards());
+        assertEquals(originalCardArray, deck.getCards());
+        deck.shuffle();
+        // This test has a 1/(80!) chance of failing by accident. If this test fails and the code is correct, buy a lotto ticket
+        assertNotEquals(originalCardArray, deck.getCards());
+    }
 }

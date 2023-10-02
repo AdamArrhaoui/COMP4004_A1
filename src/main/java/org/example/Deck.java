@@ -37,4 +37,8 @@ public class Deck {
         cards.remove(card);
         card.setDeck(null);
     }
+
+    public void shuffle(){
+        return;
+    }
 }
