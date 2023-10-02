@@ -35,7 +35,12 @@ public class CardGenerator {
     }
 
     public static Stream<Card> generateAllGameCards() {
-        return null;
+        return Stream.of(
+                generateBasicCards(60, CardSuit.ANY),
+                generateAlchemyCards(15),
+                generateCardStream(3, CardType.MERLIN, CardSuit.ANY, 0),
+                generateCardStream(2, CardType.APPRENTICE, CardSuit.ANY, 0)
+        ).flatMap(c -> c);
     }
 
     private static class CardSupplier implements Supplier<Card> {
