@@ -76,4 +76,17 @@ class CardGeneratorUnitTests {
             }
         }
     }
+
+    @Test
+    @DisplayName("U-TEST 027: CardGenerator creates stream of all 15 alchemy cards in order")
+    void testAlchemyCardStream(){
+        List<Card> cardList = CardGenerator.generateAlchemyCards(15).toList();
+        for (int i = 0; i < 15 ; i++) {
+            int expectedValue = i + 1;
+            Card currentCard = cardList.get(i);
+            assertEquals(CardType.ALCHEMY, currentCard.getType());
+            assertEquals(CardSuit.ANY, currentCard.getSuit());
+            assertEquals(expectedValue, currentCard.getValue());
+        }
+    }
 }
