@@ -34,6 +34,10 @@ public class CardGenerator {
         return Stream.generate(supplier).limit(n);
     }
 
+    public static Stream<Card> generateAllGameCards() {
+        return null;
+    }
+
     private static class CardSupplier implements Supplier<Card> {
         // Attributes to keep track of the current card type and value.
         protected final List<CardSuit> SUITLIST = EnumSet.complementOf(EnumSet.of(CardSuit.ANY)).stream().toList();
