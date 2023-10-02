@@ -42,7 +42,10 @@ public class Card {
     }
 
     public boolean cardEquals(Object o) {
-        return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return getValue() == card.getValue() && getType() == card.getType() && getSuit() == card.getSuit();
     }
 
     public CardType getType() {
@@ -132,6 +135,5 @@ public class Card {
             default:
                 return 0;
         }
-
     }
 }

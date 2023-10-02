@@ -16,7 +16,7 @@ public class Deck {
     }
 
     public static Deck FullDeck(){
-        return new Deck();
+        return new Deck(CardGenerator.generateAllGameCards().toList());
     }
 
     public ArrayList<Card> getCards() {
