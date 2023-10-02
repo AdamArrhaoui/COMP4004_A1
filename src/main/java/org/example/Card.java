@@ -41,6 +41,10 @@ public class Card {
         setValue(val);
     }
 
+    public boolean cardEquals(Object o) {
+        return false;
+    }
+
     public CardType getType() {
         return type;
     }

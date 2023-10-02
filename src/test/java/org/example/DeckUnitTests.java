@@ -95,4 +95,15 @@ class DeckUnitTests {
             assertSame(deck, card.getDeck());
         }
     }
+
+    @Test
+    @DisplayName("U-TEST 029: New full deck contains every game card exactly once")
+    void testFullDeckCards(){
+        Deck deck = Deck.FullDeck();
+        assertEquals(80, deck.getCards().size());
+        List<Card> allCards = CardGenerator.generateAllGameCards().toList();
+        for (int i = 0; i < 80; i++) {
+            assertTrue(allCards.get(i).cardEquals(deck.getCards().get(i)));
+        }
+    }
 }

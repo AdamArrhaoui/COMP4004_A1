@@ -15,6 +15,10 @@ public class Deck {
         cardIterable.forEach(this::addCard);
     }
 
+    public static Deck FullDeck(){
+        return new Deck();
+    }
+
     public ArrayList<Card> getCards() {
         return cards;
     }
