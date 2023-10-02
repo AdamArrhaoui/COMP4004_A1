@@ -1,6 +1,7 @@
 package org.example;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -55,6 +56,24 @@ class CardGeneratorUnitTests {
             assertEquals(CardType.BASIC, currentCard.getType());
             assertEquals(suit, currentCard.getSuit());
             assertEquals(expectedValue, currentCard.getValue());
+        }
+    }
+
+    @Test
+    @DisplayName("U-TEST 026: CardGenerator creates stream of all 60 basic weapon cards in order")
+    void testBasicWeaponCardStream(){
+        List<Card> cardList = CardGenerator.generateBasicCards(60, CardSuit.ANY).toList();
+        CardSuit[] suits = CardSuit.values();
+        for (int s = 1; s <= 4; s++) {
+            CardSuit currentSuit = suits[s];
+            for (int i = 0; i < 15 ; i++) {
+                int expectedValue = i + 1;
+                int cardIndex = (s-1) * 15 + i;
+                Card currentCard = cardList.get(cardIndex);
+                assertEquals(CardType.BASIC, currentCard.getType());
+                assertEquals(currentSuit, currentCard.getSuit());
+                assertEquals(expectedValue, currentCard.getValue());
+            }
         }
     }
 }
