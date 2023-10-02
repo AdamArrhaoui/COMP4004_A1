@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -89,4 +90,47 @@ class CardGeneratorUnitTests {
             assertEquals(expectedValue, currentCard.getValue());
         }
     }
+
+    @Test
+    @DisplayName("U-TEST 028: CardGenerator creates stream of all 80 game cards in order of 60 basic, 15 alchemy, 3 merlin, 2 apprentice")
+    void testAllGameCardStream(){
+        List<Card> cardList = CardGenerator.generateAllGameCards().toList();
+        assertEquals(80, cardList.size());
+        // Test basic cards
+        CardSuit[] suits = CardSuit.values();
+        CardType expectedType;
+        CardSuit expectedSuit;
+        int expectedValue;
+
+        for (int i = 0; i < 80; i++){
+            if (i < 60){
+                // Basic Card
+                expectedType = CardType.BASIC;
+                expectedSuit = suits[(i / 15) + 1];
+                expectedValue = (i % 15) + 1;
+            } else if (i < 75) {
+                // Alchemy Card
+                expectedType = CardType.ALCHEMY;
+                expectedSuit = CardSuit.ANY;
+                expectedValue = (i % 15) + 1;
+            } else if (i < 78) {
+                // Merlin Card
+                expectedType = CardType.MERLIN;
+                expectedSuit = CardSuit.ANY;
+                expectedValue = 0;
+            } else {
+                // Apprentice Card
+                expectedType = CardType.APPRENTICE;
+                expectedSuit = CardSuit.ANY;
+                expectedValue = 0;
+            }
+            int cardIndex = i;
+            Supplier<String> errorMessage = () -> "Assertion failed for card number " + cardIndex;
+            Card currentCard = cardList.get(i);
+            assertEquals(expectedType, currentCard.getType(), errorMessage);
+            assertEquals(expectedSuit, currentCard.getSuit(), errorMessage);
+            assertEquals(expectedValue, currentCard.getValue(), errorMessage);
+        }
+    }
+
 }
