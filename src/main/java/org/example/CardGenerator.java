@@ -30,7 +30,8 @@ public class CardGenerator {
     }
 
     public static Stream<Card> generateAlchemyCards(int n){
-        return null;
+        CardSupplier supplier = new CardSupplier(CardType.ALCHEMY, CardSuit.ANY, 1, true, false);
+        return Stream.generate(supplier).limit(n);
     }
 
     private static class CardSupplier implements Supplier<Card> {
