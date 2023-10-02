@@ -1,6 +1,8 @@
 package org.example;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class CardGenerator {
@@ -13,11 +15,55 @@ public class CardGenerator {
      * @return Stream<Card> of new cards
      */
     public static Stream<Card> generateCardStream(int n, CardType type, CardSuit suit, int value){
-        return Stream.generate(() -> new Card(type, suit, value)).limit(n);
+        CardSupplier supplier = new CardSupplier(type, suit, value, false, false);
+        return Stream.generate(supplier).limit(n);
     }
 
     public static Stream<Card> generateBasicCards(int n, CardSuit suit){
-        AtomicInteger i = new AtomicInteger();
-        return Stream.generate(() -> new Card(suit, i.getAndIncrement()%Card.MAX_VALUE + 1)).limit(n);
+        boolean iterSuit = false;
+        CardSupplier supplier = new CardSupplier(CardType.BASIC, suit, 1, true, iterSuit);
+        return Stream.generate(supplier).limit(n);
+    }
+
+    private static class CardSupplier implements Supplier<Card> {
+        // Attributes to keep track of the current card type and value.
+        protected final List<CardSuit> SUITLIST = EnumSet.complementOf(EnumSet.of(CardSuit.ANY)).stream().toList();
+        private CardType currentType;
+        private CardSuit currentSuit;
+        private int currentValue;
+        private boolean iterValue;
+        private boolean iterSuit;
+
+        public CardSupplier(CardType currentType, CardSuit currentSuit, int currentValue, boolean iterValue, boolean iterSuit) {
+            this.currentType = currentType;
+            this.currentSuit = currentSuit;
+            this.currentValue = currentValue;
+            this.iterValue = iterValue;
+            this.iterSuit = iterSuit;
+        }
+
+        @Override
+        public Card get() {
+            // Create a new card with the current type and value.
+            Card card =  new Card(currentType, currentSuit, currentValue);
+
+            if (iterValue)
+                nextCardValue();
+            if (iterSuit)
+                nextCardSuit();
+
+            return card;
+        }
+        private void nextCardValue(){
+            if (++currentValue > Card.MAX_VALUE) {
+                currentValue = Card.MIN_VALUE;
+            }
+        }
+        private void nextCardSuit(){
+            if (currentValue <= Card.MIN_VALUE){
+                int newIndex = (SUITLIST.indexOf(currentSuit) + 1) % SUITLIST.size();
+                currentSuit = SUITLIST.get(newIndex);
+            }
+        }
     }
 }
