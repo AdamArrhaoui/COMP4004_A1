@@ -21,6 +21,10 @@ public class CardGenerator {
 
     public static Stream<Card> generateBasicCards(int n, CardSuit suit){
         boolean iterSuit = false;
+        if (suit == CardSuit.ANY){
+            suit = CardSuit.SWORDS;
+            iterSuit = true;
+        }
         CardSupplier supplier = new CardSupplier(CardType.BASIC, suit, 1, true, iterSuit);
         return Stream.generate(supplier).limit(n);
     }
