@@ -2,6 +2,8 @@ package org.example;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,5 +118,39 @@ class DeckUnitTests {
         deck.shuffle();
         // This test has a 1/(80!) chance of failing by accident. If this test fails and the code is correct, buy a lotto ticket
         assertNotEquals(originalCardArray, deck.getCards());
+    }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 031: Deck can draw and deal certain number of cards from back of deck to other Deck")
+    @ValueSource(ints = {-1, 0, 10, 30, 100})
+    void testDeckDrawAndDeal(int numCards){
+        Deck fullDeck = Deck.FullDeck();
+        Deck newDeck = new Deck();
+        int fullDeckSize = fullDeck.getCards().size();
+        if (numCards <= 0 || numCards > fullDeck.getCards().size()){
+            // Error handling if numCards <= 0 or numCards > number of cards in original deck
+            assertThrows(IllegalArgumentException.class, () -> fullDeck.dealCardsTo(newDeck, numCards));
+            return;
+        } else {
+            // Error handling if dealing to null deck
+            assertThrows(NullPointerException.class, () -> fullDeck.dealCardsTo(null, numCards));
+        }
+
+        fullDeck.shuffle();
+        fullDeck.dealCardsTo(newDeck, numCards);
+
+        assertEquals(numCards, newDeck.getCards().size());
+        assertEquals(fullDeckSize - numCards, fullDeck.getCards().size());
+
+        // Test deck transferred properly
+        for (Card card : newDeck.getCards()) {
+            assertSame(newDeck, card.getDeck());
+            // If card in new deck is found in old deck, make sure that the card isn't the same in memory
+            // (could be same value but can't be same card reference)
+            int cardIdx = fullDeck.getCards().indexOf(card);
+            if (cardIdx != -1){
+                assertNotSame(card, fullDeck.getCards().get(cardIdx));
+            }
+        }
     }
 }
