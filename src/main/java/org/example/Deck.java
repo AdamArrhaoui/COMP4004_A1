@@ -80,6 +80,11 @@ public class Deck {
     }
 
     public boolean containsType(CardType type) {
+        for (Card card : cards) {
+            if (card.getType() == type) {
+                return true;
+            }
+        }
         return false;
     }
 }
