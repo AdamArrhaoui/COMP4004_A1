@@ -87,4 +87,8 @@ public class Deck {
         }
         return false;
     }
+
+    public boolean containsSuit(CardSuit suit) {
+        return false;
+    }
 }

@@ -210,4 +210,28 @@ class DeckUnitTests {
         testDeck.removeCard(cardToRemove);
         assertFalse(testDeck.containsType(testType));
     }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 034: Deck can check if it contains any card of a specific Suit")
+    @EnumSource(
+            value = CardSuit.class,
+            mode = EnumSource.Mode.MATCH_ALL
+    )
+    void testDeckContainsSuit(CardSuit testSuit){
+        CardType testType = CardType.ALCHEMY;
+        int testVal = 1;
+        List<Card> testCards = List.of(
+                new Card(testType, CardSuit.ANY, testVal),
+                new Card(testType, CardSuit.SWORDS, testVal),
+                new Card(testType, CardSuit.ARROWS, testVal),
+                new Card(testType, CardSuit.SORCERY, testVal),
+                new Card(testType, CardSuit.DECEPTION, testVal)
+        );
+        Deck testDeck = new Deck(testCards);
+        testDeck.shuffle();
+        assertTrue(testDeck.containsSuit(testSuit));
+        Card cardToRemove = testDeck.findSpecificCard(testType, testSuit, testVal);
+        testDeck.removeCard(cardToRemove);
+        assertFalse(testDeck.containsSuit(testSuit));
+    }
 }
