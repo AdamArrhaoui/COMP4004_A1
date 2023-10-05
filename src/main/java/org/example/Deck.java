@@ -71,6 +71,11 @@ public class Deck {
      * @return Found card, or null if card isn't found
      */
     public Card findSpecificCard(CardType type, CardSuit suit, int value) {
+        for (Card card : cards) {
+            if (card.getType() == type && card.getSuit() == suit && card.getValue() == value) {
+                return card;
+            }
+        }
         return null;
     }
 }
