@@ -78,4 +78,8 @@ public class Deck {
         }
         return null;
     }
+
+    public boolean containsType(CardType type) {
+        return false;
+    }
 }

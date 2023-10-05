@@ -3,6 +3,7 @@ package org.example;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
@@ -184,5 +185,29 @@ class DeckUnitTests {
                 differentCards) {
             assertNull(deck.findSpecificCard(card.getType(), card.getSuit(), card.getValue()));
         }
+    }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 033: Deck can check if it contains any card of a specific Type")
+    @EnumSource(
+            value = CardType.class,
+            mode = EnumSource.Mode.MATCH_ALL
+    )
+    void testDeckContainsType(CardType testType){
+        // Basic deck of cards, one of each card type. All same suit and value
+        CardSuit testSuit = CardSuit.SWORDS;
+        int testVal = 1;
+        List<Card> testCards = List.of(
+                new Card(CardType.BASIC, testSuit, testVal),
+                new Card(CardType.ALCHEMY, testSuit, testVal),
+                new Card(CardType.MERLIN, testSuit, testVal),
+                new Card(CardType.APPRENTICE, testSuit, testVal)
+        );
+        Deck testDeck = new Deck(testCards);
+        testDeck.shuffle();
+        assertTrue(testDeck.containsType(testType));
+        Card cardToRemove = testDeck.findSpecificCard(testType, testSuit, testVal);
+        testDeck.removeCard(cardToRemove);
+        assertFalse(testDeck.containsType(testType));
     }
 }
