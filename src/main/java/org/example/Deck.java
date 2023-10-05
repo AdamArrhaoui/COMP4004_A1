@@ -89,6 +89,11 @@ public class Deck {
     }
 
     public boolean containsSuit(CardSuit suit) {
+        for (Card card : cards) {
+            if (card.getSuit() == suit) {
+                return true;
+            }
+        }
         return false;
     }
 }
