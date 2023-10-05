@@ -62,4 +62,15 @@ public class Deck {
         List<Card> cardsToMove = new ArrayList<>(cards.subList(cards.size() - numCards, cards.size()));
         otherDeck.addCards(cardsToMove);
     }
+
+    /**
+     * Finds and returns first card in deck with the exact type, suit, and value.
+     * @param type
+     * @param suit
+     * @param value
+     * @return Found card, or null if card isn't found
+     */
+    public Card findSpecificCard(CardType type, CardSuit suit, int value) {
+        return null;
+    }
 }

@@ -153,4 +153,36 @@ class DeckUnitTests {
             }
         }
     }
+
+    @Test
+    @DisplayName("U-TEST 032: Deck can be searched for a card with specific type, suit, and value")
+    void testDeckSpecificCardSearch(){
+        List<Card> testCards = List.of(
+                new Card(CardSuit.SORCERY, 2),
+                new Card(CardSuit.SWORDS, 3),
+                new Card(CardType.ALCHEMY, CardSuit.SWORDS, 1),
+                new Card(CardType.MERLIN, CardSuit.ANY, 10),
+                new Card(CardType.APPRENTICE, CardSuit.DECEPTION, 0)
+        );
+        Deck deck = new Deck(testCards);
+
+        // Test if cards in deck are correctly found
+        for (Card card :
+                testCards) {
+            Card resultCard = deck.findSpecificCard(card.getType(), card.getSuit(), card.getValue());
+            assertNotNull(resultCard);
+            assertSame(card, resultCard);
+        }
+
+        // Test if cards not in deck cannot be found (returns null)
+        List<Card> differentCards = List.of(
+                new Card(CardType.MERLIN, CardSuit.DECEPTION, 10),
+                new Card(CardSuit.SORCERY, 1),
+                new Card(CardType.APPRENTICE, CardSuit.ANY, 0)
+        );
+        for (Card card :
+                differentCards) {
+            assertNull(deck.findSpecificCard(card.getType(), card.getSuit(), card.getValue()));
+        }
+    }
 }
