@@ -13,6 +13,11 @@ public class Deck {
         cards = new ArrayList<>();
     }
 
+    public Deck(Player player) {
+        this();
+        playerOwner = player;
+    }
+
     public Deck(Iterable<Card> cardIterable){
         this();
         cardIterable.forEach(this::addCard);

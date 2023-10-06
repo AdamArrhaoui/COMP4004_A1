@@ -10,7 +10,7 @@ public class Player {
             throw new IllegalArgumentException("New player name cannot be null or blank!");
         }
         this.name = name;
-        this.hand = new Deck();
+        this.hand = new Deck(this);
         this.injuryDeck = new Deck();
     }
 
