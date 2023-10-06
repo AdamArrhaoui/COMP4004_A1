@@ -98,6 +98,10 @@ public class Deck {
     }
 
     public int getTotalInjury() {
-        return -1;
+        int totalInjury = 0;
+        for (Card card : cards) {
+            totalInjury += card.getInjuryPoints();
+        }
+        return totalInjury;
     }
 }
