@@ -96,4 +96,8 @@ public class Deck {
         }
         return false;
     }
+
+    public int getTotalInjury() {
+        return -1;
+    }
 }

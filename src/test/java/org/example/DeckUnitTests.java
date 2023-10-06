@@ -234,4 +234,19 @@ class DeckUnitTests {
         testDeck.removeCard(cardToRemove);
         assertFalse(testDeck.containsSuit(testSuit));
     }
+
+    @Test
+    @DisplayName("U-TEST 035: Deck can calculate total injury points of all contained Cards")
+    void testDeckTotalInjuryPoints(){
+        Deck fullDeck = Deck.FullDeck();
+        fullDeck.shuffle();
+        Deck testDeck = new Deck();
+        assertEquals(0, testDeck.getTotalInjury());
+        fullDeck.dealCardsTo(testDeck, 20);
+        int expectedTotalInjury = 0;
+        for (Card card : testDeck.getCards()) {
+            expectedTotalInjury += card.getInjuryPoints();
+        }
+        assertEquals(expectedTotalInjury, testDeck.getTotalInjury());
+    }
 }
