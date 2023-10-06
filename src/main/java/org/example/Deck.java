@@ -7,6 +7,7 @@ import java.util.List;
 public class Deck {
 
     private ArrayList<Card> cards;
+    private Player playerOwner;
 
     public Deck(){
         cards = new ArrayList<>();
@@ -103,5 +104,9 @@ public class Deck {
             totalInjury += card.getInjuryPoints();
         }
         return totalInjury;
+    }
+
+    public Player getPlayerOwner() {
+        return playerOwner;
     }
 }

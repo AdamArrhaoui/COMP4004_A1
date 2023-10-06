@@ -32,4 +32,13 @@ class PlayerUnitTests {
         assertNotNull(player.getInjuryDeck());
         assertTrue(player.getInjuryDeck().getCards().isEmpty());
     }
+
+    @Test
+    @DisplayName("U-TEST 038: New Deck created as player's hand has reference to the player that the deck belongs to.")
+    void testNewPlayerHandsPlayerReference(){
+        Deck testDeck = new Deck();
+        assertNull(testDeck.getPlayerOwner());
+        Player player = new Player("Bobby");
+        assertSame(player, player.getHand().getPlayerOwner());
+    }
 }
