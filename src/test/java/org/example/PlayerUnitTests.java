@@ -21,4 +21,15 @@ class PlayerUnitTests {
         Player player = new Player(testName);
         assertEquals(testName, player.getName());
     }
+
+    @Test
+    @DisplayName("U-TEST 037: New Player has empty Deck as their hand, and empty Deck as injuryDeck")
+    void testNewPlayerEmptyHandEmptyInjuryDeck(){
+        Player player = new Player("Bobby");
+        assertNotNull(player.getHand());
+        assertTrue(player.getHand().getCards().isEmpty());
+
+        assertNotNull(player.getInjuryDeck());
+        assertTrue(player.getInjuryDeck().getCards().isEmpty());
+    }
 }

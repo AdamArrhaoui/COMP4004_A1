@@ -2,6 +2,8 @@ package org.example;
 
 public class Player {
     private String name;
+    private Deck hand;
+    private Deck injuryDeck;
 
     Player(String name){
         if (name == null || name.isBlank()){
@@ -12,5 +14,13 @@ public class Player {
 
     public String getName() {
         return name;
+    }
+
+    public Deck getHand() {
+        return hand;
+    }
+
+    public Deck getInjuryDeck() {
+        return injuryDeck;
     }
 }
