@@ -114,4 +114,8 @@ public class Deck {
     public Player getPlayerOwner() {
         return playerOwner;
     }
+
+    public String getCardsString() {
+        return null;
+    }
 }

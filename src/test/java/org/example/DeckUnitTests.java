@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -248,5 +249,30 @@ class DeckUnitTests {
             expectedTotalInjury += card.getInjuryPoints();
         }
         assertEquals(expectedTotalInjury, testDeck.getTotalInjury());
+    }
+
+    @Test
+    @DisplayName("U-TEST 040: Deck of cards can be displayed to terminal. Each card appears in order.")
+    void testPrintDeckCards(){
+        Deck testDeck = new Deck();
+        String emptyDeckString = testDeck.getCardsString();
+        assertEquals("", emptyDeckString);
+
+        Deck fullDeck = Deck.FullDeck();
+        fullDeck.shuffle();
+        fullDeck.dealCardsTo(testDeck, 12);
+
+        String fullHandString = testDeck.getCardsString();
+        //System.out.println(fullHandString);
+        String[] splitHandString = fullHandString.split("\n");
+        Scanner cardTypeScanner = new Scanner(splitHandString[1].replace("│", ""));
+        Scanner cardSuitScanner = new Scanner(splitHandString[2].replace("│", ""));
+        Scanner cardValScanner= new Scanner(splitHandString[3].replace("│", ""));
+
+        for (Card card: testDeck.getCards()) {
+            assertEquals(card.getType().toString().substring(0, 2), cardTypeScanner.next("\\S{2}"));
+            assertEquals(card.getSuit().getSymbol(), cardSuitScanner.next("\\S{2}"));
+            assertEquals(card.getValue(), Integer.parseInt(cardValScanner.next("\\S{2}")));
+        }
     }
 }
