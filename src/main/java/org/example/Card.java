@@ -41,6 +41,17 @@ public class Card {
         setValue(val);
     }
 
+    @Override
+    public String toString(){
+        return String.format("""
+                ╭────╮
+                │%2.2s  │
+                │ %2.2s │
+                │  %02d│
+                ╰────╯
+                """, type.toString(), suit.getSymbol(), value);
+    }
+
     public boolean cardEquals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
