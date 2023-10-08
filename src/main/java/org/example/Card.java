@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,6 +52,24 @@ public class Card {
                 │  %02d│
                 ╰────╯
                 """, type.toString(), suit.getSymbol(), value);
+    }
+
+    public static String listToString(Collection<Card> cards){
+        if(cards.isEmpty()) return "";
+        List<String[]> cardStrings = cards.stream()
+                .map(Card::toString)
+                .map(str -> str.split("\n"))
+                .toList();
+
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < cardStrings.get(0).length; i++) {  // assuming all cards have same number of lines
+            for (String[] cardString : cardStrings) {
+                result.append(cardString[i]);
+            }
+            result.append("\n");
+        }
+        return result.toString().strip();
     }
 
     public boolean cardEquals(Object o) {

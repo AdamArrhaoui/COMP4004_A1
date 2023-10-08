@@ -116,6 +116,6 @@ public class Deck {
     }
 
     public String getCardsString() {
-        return null;
+        return Card.listToString(cards);
     }
 }
