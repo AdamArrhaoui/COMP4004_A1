@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CardUnitTests {
@@ -184,6 +186,30 @@ class CardUnitTests {
         for (int i = 0; i <= Card.MAX_VALUE; ++i){
             Card card = new Card(CardType.APPRENTICE, testSuit, i);
             assertEquals(5, card.getInjuryPoints());
+        }
+    }
+
+    @Test
+    @DisplayName("U-TEST 039: Cards can be displayed to terminal. Card's type, suit and value are visible")
+    void testBasicCardToString(){
+        List<Card> testCards = CardGenerator.generateAllGameCards().toList();
+        for (Card card :
+                testCards) {
+            String expectedSymbol = "??";
+            switch (card.getSuit()){
+                case SWORDS -> expectedSymbol = "SW";
+                case ARROWS -> expectedSymbol = "AR";
+                case SORCERY -> expectedSymbol = "SO";
+                case DECEPTION -> expectedSymbol = "DE";
+            }
+            String expectedValueString = String.format("%02d", card.getValue());
+            String expectedTypeString = card.getType().toString().substring(0, 2);
+
+            String cardString = card.toString();
+            //System.out.println(cardString);
+            assertTrue(cardString.contains(expectedTypeString));
+            assertTrue(cardString.contains(expectedSymbol));
+            assertTrue(cardString.contains(expectedValueString));
         }
     }
 }
