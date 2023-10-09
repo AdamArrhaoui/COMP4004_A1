@@ -1,5 +1,8 @@
 package org.example;
 
+import java.io.PrintWriter;
+import java.util.Scanner;
+
 public class Player {
     private String name;
     private Deck hand;
@@ -24,5 +27,9 @@ public class Player {
 
     public Deck getInjuryDeck() {
         return injuryDeck;
+    }
+
+    public Card promptAnyCard(Scanner scanner, PrintWriter printWriter) {
+        return null;
     }
 }

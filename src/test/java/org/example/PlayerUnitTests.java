@@ -6,6 +6,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Random;
+import java.util.Scanner;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerUnitTests {
@@ -40,5 +45,37 @@ class PlayerUnitTests {
         assertNull(testDeck.getPlayerOwner());
         Player player = new Player("Bobby");
         assertSame(player, player.getHand().getPlayerOwner());
+    }
+
+    @Test
+    @DisplayName("U-TEST 041: Player can be prompted to select any card from their hand using the index")
+    void testPlayerCardPrompt(){
+        String input = "1\n";
+        StringWriter output = new StringWriter();
+        // Prompting card from player with an empty deck should result in Null
+        Player player = new Player("Billy");
+        assertNull(player.promptAnyCard(new Scanner(input), new PrintWriter(output)));
+
+        Deck fullDeck = Deck.FullDeck();
+        fullDeck.shuffle();
+        fullDeck.dealCardsTo(player.getHand(), 12);
+
+        // Test that each card in the player's hand can be prompted for and returned correctly
+        for (int i = 1; i <= 12; i++) {
+            input = i + "\n";
+            Card chosenCard = player.promptAnyCard(new Scanner(input), new PrintWriter(output));
+            assertNotNull(chosenCard);
+            assertSame(player.getHand().getCards().get(i - 1), chosenCard);
+        }
+
+        // Test that the player will get continue to get re-prompted for a card choice if they give invalid input,
+        // and the card returned is valid
+        Random random = new Random();
+        int randCardIdx = random.nextInt(1, 13);
+        String garbInput = "-1\n0\n100\nasfefsf\nNaN\n\n";
+        Card resultCard = assertDoesNotThrow(() -> {
+            return player.promptAnyCard(new Scanner(garbInput + randCardIdx + "\n"), new PrintWriter(output));
+        });
+        assertSame(player.getHand().getCards().get(randCardIdx - 1), resultCard);
     }
 }
