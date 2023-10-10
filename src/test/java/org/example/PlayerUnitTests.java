@@ -8,6 +8,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -102,5 +105,49 @@ class PlayerUnitTests {
             assertEquals(i-1, player.getHand().getCards().size());
             assertFalse(player.getHand().getCards().contains(discarded));
         }
+    }
+
+    @Test
+    @DisplayName("U-TEST 043: Player can be prompted to select a valid card suit.")
+    void testPlayerCardSuitPrompt(){
+        // Map of cardsuits to input strings that should result in that suit
+        // Testing for no case sensitivity, multiple spellings, and also using the suit index
+        Map<CardSuit,List<String>> validSuitStrings = Map.of(
+                CardSuit.SWORDS, List.of("Sw", "SWoRds", "SW     ", "sword", "1"),
+                CardSuit.ARROWS, List.of(" AR", "ar", "arr ows", "Arrows ", "2"),
+                CardSuit.SORCERY, List.of("SO", "sO", " SOr  ", "SOrcery", "3", " 3 "),
+                CardSuit.DECEPTION, List.of("DECEPT", "dec", "DE", "dece pt ION  ", " 4")
+        );
+
+        // List of invalid inputs. Inputting these should result in a re-prompt
+        List<String> invalidSuitStrings = List.of("", "afsefsva", "s", " s", "a", "-1", "0", "ANY", "any", "BASIC", "NaN");
+
+        Player player = new Player("Bobby");
+        StringWriter output = new StringWriter();
+
+        for (Map.Entry<CardSuit,List<String>> entry : validSuitStrings.entrySet()){
+            CardSuit expectedSuit = entry.getKey();
+            List<String> inputStrings = entry.getValue();
+            for(String str : inputStrings){
+                String input = str + "\n";
+                // The prompt should complete almost instantly.
+                // If it takes longer than 1 second, it's probably re-prompting, which means test failed.
+                CardSuit resultSuit = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> {
+                    return player.promptCardSuit(new Scanner(input), new PrintWriter(output));
+                }, String.format("promptCardSuit timed out! Input parsing probably failed for string '%s'", input));
+                assertNotNull(resultSuit);
+                assertEquals(expectedSuit, resultSuit,
+                        String.format("Wrong card suit returned. \nInput: '%s' \nResult: %s \n Expected: %s",
+                                input, resultSuit, expectedSuit));
+            }
+        }
+
+        // Test invalid inputs correctly re-prompting. Using Sword value as a test
+        String invalidInputChain = String.join("\n", invalidSuitStrings);
+        CardSuit resultSuit = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> {
+            return player.promptCardSuit(new Scanner(invalidInputChain + "\nSW"), new PrintWriter(output));
+        });
+        assertNotNull(resultSuit);
+        assertEquals(CardSuit.SWORDS, resultSuit);
     }
 }

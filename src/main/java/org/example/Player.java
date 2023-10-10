@@ -66,4 +66,8 @@ public class Player {
         hand.removeCard(cardToDiscard);
         return cardToDiscard;
     }
+
+    public CardSuit promptCardSuit(Scanner input, PrintWriter output) {
+        return null;
+    }
 }
