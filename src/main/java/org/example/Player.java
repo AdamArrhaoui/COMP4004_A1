@@ -59,4 +59,8 @@ public class Player {
         }
         return hand.getCards().get(selectedIdx - 1);
     }
+
+    public Card promptDiscardCard(Scanner input, PrintWriter output) {
+        return null;
+    }
 }

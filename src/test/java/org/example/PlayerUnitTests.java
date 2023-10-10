@@ -78,4 +78,29 @@ class PlayerUnitTests {
         });
         assertSame(player.getHand().getCards().get(randCardIdx - 1), resultCard);
     }
+
+    @Test
+    @DisplayName("U-TEST 042: Player can be prompted to select a card from their hand to discard.")
+    void testPlayerCardDiscardPrompt(){
+        String input = "1\n";
+        StringWriter output = new StringWriter();
+
+        Player player = new Player("Bobby");
+        // Test player discards nothing when their hand is empty
+        assertNull(player.promptDiscardCard(new Scanner(input), new PrintWriter(output)));
+
+        Deck fullDeck = Deck.FullDeck();
+        fullDeck.shuffle();
+        fullDeck.dealCardsTo(player.getHand(), 12);
+        Random random = new Random();
+
+        for (int i = 12; i > 0; i--) {
+            int randIdx = random.nextInt(1, i + 1);
+            input = randIdx + "\n";
+            Card discarded = player.promptDiscardCard(new Scanner(input), new PrintWriter(output));
+            assertNotNull(discarded);
+            assertEquals(i-1, player.getHand().getCards().size());
+            assertFalse(player.getHand().getCards().contains(discarded));
+        }
+    }
 }
