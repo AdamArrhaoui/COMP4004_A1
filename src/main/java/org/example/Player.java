@@ -61,6 +61,9 @@ public class Player {
     }
 
     public Card promptDiscardCard(Scanner input, PrintWriter output) {
-        return null;
+        if (hand.getCards().isEmpty()) return null;
+        Card cardToDiscard = promptAnyCard(input, output);
+        hand.removeCard(cardToDiscard);
+        return cardToDiscard;
     }
 }
