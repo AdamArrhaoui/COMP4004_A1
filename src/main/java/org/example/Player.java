@@ -110,6 +110,22 @@ public class Player {
     }
 
     public Integer promptCardValue(Scanner input, PrintWriter output) {
-        return -1;
+        int selectedVal = 0;
+        while (selectedVal == 0){
+            output.print("Select a card value (between %d and %d): ".formatted(Card.MIN_VALUE, Card.MAX_VALUE));
+            output.flush();
+
+            String strInput = input.nextLine().replaceAll("\\s", "");
+            try {
+                int selection = Integer.parseInt(strInput);
+                if (selection >= Card.MIN_VALUE && selection <= Card.MAX_VALUE) {
+                    selectedVal = selection;
+                }
+            } catch (NumberFormatException ignored) {}
+            if (selectedVal == 0){
+                output.println("\nInvalid input! Please enter a number within range.\n");
+            }
+        }
+        return selectedVal;
     }
 }
