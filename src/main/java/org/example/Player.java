@@ -108,4 +108,8 @@ public class Player {
         }
         return selectedSuit;
     }
+
+    public Integer promptCardValue(Scanner input, PrintWriter output) {
+        return -1;
+    }
 }

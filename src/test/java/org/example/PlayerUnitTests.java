@@ -150,4 +150,29 @@ class PlayerUnitTests {
         assertNotNull(resultSuit);
         assertEquals(CardSuit.SWORDS, resultSuit);
     }
+
+    @Test
+    @DisplayName("U-TEST 044: Player can be prompted to select a valid card value.")
+    void testPlayerCardValuePrompt(){
+        List<String> validStrings = List.of("1", "01", " 12", "15", "09", "8  ", "  7 ");
+        List<String> invalidStrings = List.of("0", "fbase", "", " ", "16", "-1", "100", "null", "NaN", "01   121");
+
+        Player player = new Player("Billy");
+        StringWriter output = new StringWriter();
+
+        for (String str : validStrings) {
+            String input = str + "\n";
+            int result = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> {
+                return player.promptCardValue(new Scanner(input), new PrintWriter(output));
+            });
+            assertTrue(result >= 1 && result <= Card.MAX_VALUE);
+        }
+
+        // Test invalid inputs correctly re-prompting. Using value 5 as a test
+        String invalidInputChain = String.join("\n", invalidStrings);
+        int result = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> {
+            return player.promptCardValue(new Scanner(invalidInputChain + "\n5\n"), new PrintWriter(output));
+        });
+        assertEquals(5, result);
+    }
 }
