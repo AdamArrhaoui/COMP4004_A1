@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -175,4 +176,61 @@ class PlayerUnitTests {
         });
         assertEquals(5, result);
     }
+
+    @Test
+    @DisplayName("U-TEST 045: Player can be prompted to fill in a non-basic card's suit or value.")
+    void testPlayerCardInfoPrompt(){
+        StringWriter output = new StringWriter();
+
+        // Test player gets prompted to change non-basic card suits and/or values
+        Player specialPlayer = new Player("Special Sally");
+        // List of non-basic cards to test
+        List<Card> nonBasicCards = Stream.of(
+                CardGenerator.generateAlchemyCards(15),
+                CardGenerator.generateCardStream(3, CardType.MERLIN, CardSuit.ANY, 0),
+                CardGenerator.generateCardStream(2, CardType.APPRENTICE, CardSuit.ANY, 0)
+        ).flatMap(c -> c).toList();
+
+        specialPlayer.getHand().addCards(nonBasicCards);
+        specialPlayer.getHand().shuffle();
+
+        for (Card card : specialPlayer.getHand().getCards()) {
+            int expectedValue;
+            // Test setting card suits to SWORDS
+            CardSuit expectedSuit = CardSuit.SWORDS;
+            String input;
+            if (card.getType() == CardType.ALCHEMY){
+                expectedValue = card.getValue();
+                input = expectedSuit.toString() + "\n";
+            } else {
+                expectedValue = 1; // Test card with value of 1
+                input = expectedSuit.toString() + "\n" + expectedValue + "\n";
+            }
+            assertTimeoutPreemptively(Duration.ofSeconds(1), () ->
+                specialPlayer.promptFillCardInfo(card, new Scanner(input), new PrintWriter(output))
+            );
+            assertEquals(expectedValue, card.getValue());
+            assertEquals(expectedSuit, card.getSuit());
+        }
+
+        // Test that player is not prompted to fill in basic cards (They already have a suit and value)
+        Player basicPlayer = new Player("Basic Billy");
+        // List of all basic cards to test
+        List<Card> basicCards = CardGenerator.generateBasicCards(60, CardSuit.ANY).toList();
+
+        basicPlayer.getHand().addCards(basicCards);
+        basicPlayer.getHand().shuffle();
+
+        for (Card card : basicPlayer.getHand().getCards()) {
+            int expectedValue = card.getValue();
+            CardSuit expectedSuit = card.getSuit();
+            String input = "SWORDS\n1\n";
+            assertTimeoutPreemptively(Duration.ofSeconds(1), () ->
+                    specialPlayer.promptFillCardInfo(card, new Scanner(input), new PrintWriter(output))
+            );
+            assertEquals(expectedValue, card.getValue());
+            assertEquals(expectedSuit, card.getSuit());
+        }
+    }
+
 }

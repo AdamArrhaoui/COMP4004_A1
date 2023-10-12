@@ -128,4 +128,6 @@ public class Player {
         }
         return selectedVal;
     }
+    public void promptFillCardInfo(Card card, Scanner input, PrintWriter output){
+    }
 }
