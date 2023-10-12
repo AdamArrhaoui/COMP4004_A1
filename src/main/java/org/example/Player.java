@@ -128,6 +128,16 @@ public class Player {
         }
         return selectedVal;
     }
+
     public void promptFillCardInfo(Card card, Scanner input, PrintWriter output){
+        // Only prompt card's suit if the card's suit is ANY
+        if (card.getSuit() == CardSuit.ANY){
+            CardSuit newSuit = promptCardSuit(input, output);
+            card.setSuit(newSuit);
+        }
+        if (card.getValue() == 0){
+            int newValue = promptCardValue(input, output);
+            card.setValue(newValue);
+        }
     }
 }
