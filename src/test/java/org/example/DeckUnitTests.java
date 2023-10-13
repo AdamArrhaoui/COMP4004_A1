@@ -275,4 +275,25 @@ class DeckUnitTests {
             assertEquals(card.getValue(), Integer.parseInt(cardValScanner.next("\\S{2}")));
         }
     }
+
+    @Test
+    @DisplayName("U-TEST 046: Deck can be checked if it contains any non-alchemy card.")
+    void testCheckForNonAlchemy(){
+        Deck testDeck = new Deck();
+        // Empty deck doesn't contain non-alchemy cards
+        assertFalse(testDeck.containsNonAlchemy());
+        // Add every alchemy card
+        testDeck.addCards(CardGenerator.generateAlchemyCards(15).toList());
+        // Deck still doesn't contain non-alchemy cards
+        assertFalse(testDeck.containsNonAlchemy());
+        // Add single basic card
+        Card basicCard = new Card(CardSuit.SWORDS, 1);
+        testDeck.addCard(basicCard);
+        testDeck.shuffle();
+        // Deck now contains non-alchemy
+        assertTrue(testDeck.containsNonAlchemy());
+        // Remove basic card, should now be false again
+        testDeck.removeCard(basicCard);
+        assertFalse(testDeck.containsNonAlchemy());
+    }
 }

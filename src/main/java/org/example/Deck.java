@@ -118,4 +118,8 @@ public class Deck {
     public String getCardsString() {
         return Card.listToString(cards);
     }
+
+    public boolean containsNonAlchemy() {
+        return false;
+    }
 }
