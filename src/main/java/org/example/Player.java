@@ -140,7 +140,26 @@ public class Player {
             card.setValue(newValue);
         }
     }
+
     public Card promptPlayFirstCard(Scanner input, PrintWriter output) {
-        return null;
+        if (hand.getCards().isEmpty()) throw new IllegalStateException("Player's hand is empty!");
+
+        Card cardToPlay = null;
+        while (cardToPlay == null){
+            output.println("Choose the first card to play!");
+            Card chosenCard = promptAnyCard(input, output);
+            if (chosenCard.getType() == CardType.ALCHEMY){
+                if (hand.containsNonAlchemy()){
+                    output.println("\nYou can't choose an Alchemy card when you have non-Alchemy cards in your hand!\n");
+                    continue;
+                }
+                // Don't ask to fill card info for alchemy card. Keep it as ANY
+                cardToPlay = chosenCard;
+            } else {
+                promptFillCardInfo(chosenCard, input, output);
+                cardToPlay = chosenCard;
+            }
+        }
+        return cardToPlay;
     }
 }
