@@ -233,4 +233,82 @@ class PlayerUnitTests {
         }
     }
 
+    @Test
+    @DisplayName("U-TEST 047: Player can be prompted to play the first card of the round, and specify suit/value if needed. Can only play Alchemy if no other card type in hand.")
+    void testPlayFirstCard(){
+        StringWriter output = new StringWriter();
+        Player testPlayer = new Player("Billy");
+        // Asking player to play card when they don't have any cards isn't allowed.
+        assertThrows(IllegalStateException.class, () -> testPlayer.promptPlayFirstCard(new Scanner("1\n"), new PrintWriter(output)));
+        // List of cards to test. 4 Basic, then 2 Merlin, then 2 Apprentice
+        List<Card> testCards = Stream.of(
+                CardGenerator.generateBasicCards(4, CardSuit.ANY),
+                CardGenerator.generateCardStream(2, CardType.MERLIN, CardSuit.ANY, 0),
+                CardGenerator.generateCardStream(2, CardType.APPRENTICE, CardSuit.ANY, 0),
+                CardGenerator.generateAlchemyCards(2)
+                ).flatMap(c -> c).toList();
+        testPlayer.getHand().addCards(testCards);
+
+        // Try playing every card in hand in order.
+        for (int i = 0; i < testPlayer.getHand().getCards().size(); ++i) {
+            Card expectedCard = testPlayer.getHand().getCards().get(i);
+            CardSuit expectedSuit;
+            int expectedValue;
+            String input;
+
+            if (expectedCard.getType() == CardType.ALCHEMY){
+                // Test that player cannot select alchemy card while other card types present
+                // Try to select this card, then when re-prompted select first (basic) card instead
+                input = (i+1) + "\n1\n";
+                expectedCard = testPlayer.getHand().getCards().get(0);
+                expectedSuit = expectedCard.getSuit();
+                expectedValue = expectedCard.getValue();
+            } else if (expectedCard.getType() == CardType.BASIC){
+                // Basic cards don't require filling in any extra suit/value information
+                input = (i+1) + "\n";
+                expectedSuit = expectedCard.getSuit();
+                expectedValue = expectedCard.getValue();
+            } else {
+                // Merlin and Apprentice cards require both suit and value to be specified
+                expectedSuit = CardSuit.SORCERY;
+                expectedValue = 15;
+                input = "%d\n%s\n%d\n".formatted(i+1, expectedSuit.toString(), expectedValue);
+            }
+
+            Card actualCard = assertTimeoutPreemptively(Duration.ofSeconds(1),
+                    () -> testPlayer.promptPlayFirstCard(new Scanner(input), new PrintWriter(output))
+            );
+            assertNotNull(actualCard);
+            assertSame(expectedCard, actualCard);
+            assertEquals(actualCard.getSuit(), expectedSuit);
+            assertEquals(actualCard.getValue(), expectedValue);
+        }
+
+        // Now we should test if alchemy is allowed to be played when no other card present.
+        // Player should not be prompted to set its suit because it's the first turn of the round
+        Player alchemyPlayer = new Player("Alchemy dude");
+        Card alchemyCard1 = new Card(CardType.ALCHEMY, CardSuit.ANY, 1);
+        Card alchemyCard2 = new Card(CardType.ALCHEMY, CardSuit.ANY, 2);
+        Card basicCard = new Card(CardSuit.SWORDS, 1);
+        alchemyPlayer.getHand().addCards(List.of(alchemyCard1, alchemyCard2, basicCard));
+
+        // Ask for first card, expect re-prompt, then ask for our basic card
+        String input = "1\n3\n";
+        Card actualCard = assertTimeoutPreemptively(Duration.ofSeconds(1),
+                () -> alchemyPlayer.promptPlayFirstCard(new Scanner(input), new PrintWriter(output))
+        );
+        // We expect to have the basic card here
+        assertSame(basicCard, actualCard);
+        // Remove basic card from hand. The only cards left should be our alchemy cards
+        alchemyPlayer.getHand().removeCard(basicCard);
+        // Ask for first card, we should get our alchemy card as there are no other card types in the hand
+        String newInput = "1\n";
+        // We shouldn't time out here because alchemy cards don't need a suit prompt on first round
+        actualCard = assertTimeoutPreemptively(Duration.ofSeconds(1),
+                () -> alchemyPlayer.promptPlayFirstCard(new Scanner(newInput), new PrintWriter(output))
+        );
+        assertSame(alchemyCard1, actualCard);
+        // Make sure the card suit stays ANY
+        assertEquals(CardSuit.ANY, actualCard.getSuit());
+    }
 }

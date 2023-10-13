@@ -140,4 +140,7 @@ public class Player {
             card.setValue(newValue);
         }
     }
+    public Card promptPlayFirstCard(Scanner input, PrintWriter output) {
+        return null;
+    }
 }
