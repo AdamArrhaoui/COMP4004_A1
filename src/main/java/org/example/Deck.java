@@ -120,6 +120,11 @@ public class Deck {
     }
 
     public boolean containsNonAlchemy() {
+        for (Card card : cards) {
+            if (card.getType() != CardType.ALCHEMY) {
+                return true;
+            }
+        }
         return false;
     }
 }
