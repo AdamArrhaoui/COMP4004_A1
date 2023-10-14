@@ -142,6 +142,38 @@ public class Player {
     }
 
     public Card promptPlayCard(CardSuit suitRestriction, Scanner input, PrintWriter output){
+        if (hand.getCards().isEmpty()) throw new IllegalStateException("Player's hand is empty!");
+
+        if (suitRestriction != CardSuit.ANY){
+            boolean canPlaySuit = hand.containsSuit(CardSuit.ANY) || hand.containsSuit(suitRestriction);
+            if (!canPlaySuit){
+                output.println("You can't play any %s cards!".formatted(suitRestriction.toString()));
+                return null;
+            }
+        }
+
+        boolean containsNonAlchemy = hand.containsNonAlchemy();
+        Card chosenCard = null;
+        while (chosenCard == null){
+            output.println("Choose a card with %s suit:".formatted(suitRestriction.toString()));
+            chosenCard = promptAnyCard(input, output);
+
+            if (chosenCard.getType() == CardType.ALCHEMY && containsNonAlchemy) {
+                output.println("\nYou must choose non-alchemy card if you have one!\n");
+                chosenCard = null;
+                continue;
+            }
+            if (suitRestriction != CardSuit.ANY) {
+                if (chosenCard.getType() == CardType.BASIC && chosenCard.getSuit() != suitRestriction){
+                    output.println("\nThat basic card is the wrong suit! You need to play a card with %s suit!\n".formatted(suitRestriction.toString()));
+                    chosenCard = null;
+                    continue;
+                }
+                chosenCard.setSuit(suitRestriction);
+            }
+            promptFillCardInfo(chosenCard, input, output);
+        }
+        return chosenCard;
     }
 
     public Card promptPlayFirstCard(Scanner input, PrintWriter output) {
