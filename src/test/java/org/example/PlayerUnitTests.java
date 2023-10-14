@@ -3,6 +3,7 @@ package org.example;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -310,5 +311,98 @@ class PlayerUnitTests {
         assertSame(alchemyCard1, actualCard);
         // Make sure the card suit stays ANY
         assertEquals(CardSuit.ANY, actualCard.getSuit());
+    }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 048: Player can be prompted to select a card with a specific suit to play, and select card value if needed. Alchemy card can only be played if player doesn't have any other card type.")
+    @EnumSource(value = CardSuit.class)
+    void testPromptPlayCard(CardSuit desiredSuit){
+        StringWriter output = new StringWriter();
+
+        Player testPlayer = new Player("Bobbert");
+        // Asking player to play card when they don't have any cards isn't allowed.
+        assertThrows(IllegalStateException.class, () -> testPlayer.promptPlayCard(desiredSuit, new Scanner("1\n"), new PrintWriter(output)));
+
+        List<Card> testCards = List.of(
+                new Card(CardSuit.SWORDS, 1),
+                new Card(CardSuit.ARROWS, 1),
+                new Card(CardSuit.SORCERY, 1),
+                new Card(CardSuit.DECEPTION, 1),
+                new Card(CardType.ALCHEMY, CardSuit.ANY, 1),
+                new Card(CardType.MERLIN, CardSuit.ANY, 0),
+                new Card(CardType.APPRENTICE, CardSuit.ANY, 0)
+        );
+        // Ensure that first card in player's deck is always a valid option
+        if (desiredSuit != CardSuit.ANY){
+            testPlayer.getHand().addCard(new Card(desiredSuit, 1));
+        }
+        testPlayer.getHand().addCards(testCards);
+
+        int desiredVal = 1;
+
+        for (int i = 0; i < testPlayer.getHand().getCards().size(); ++i) {
+            Card expectedCard = testPlayer.getHand().getCards().get(i);
+            String input;
+
+            if (expectedCard.getType() == CardType.ALCHEMY) {
+                // Test that player cannot select alchemy card while other card types present
+                // Try to select this card, then when re-prompted select first valid basic card instead
+                input = (i+1) + "\n1\n";
+                expectedCard = testPlayer.getHand().getCards().get(0);
+            } else if (expectedCard.getType() == CardType.BASIC){
+                if (desiredSuit == CardSuit.ANY || expectedCard.getSuit() == desiredSuit) {
+                    // Basic cards don't require filling in any extra suit/value information.
+                    input = (i+1) + "\n";
+                } else {
+                    // This card's suit doesn't match the desired suit
+                    // Try to select this basic card, then when re-prompted select first valid basic card instead
+                    input = (i+1) + "\n1\n";
+                    expectedCard = testPlayer.getHand().getCards().get(0);
+                }
+            } else {
+                // MERLIN and APPRENTICE cards
+                if (desiredSuit == CardSuit.ANY){
+                    input = "%d\n%s\n%d\n".formatted(i+1, CardSuit.SWORDS, desiredVal);
+                } else {
+                    // Merlin and Apprentice cards require value to be specified. Suit should be automatically set
+                    input = "%d\n%d\n".formatted(i+1, desiredVal);
+                }
+            }
+            Card actualCard = assertTimeoutPreemptively(Duration.ofSeconds(1),
+                    () -> testPlayer.promptPlayCard(desiredSuit, new Scanner(input), new PrintWriter(output))
+            );
+            assertNotNull(actualCard);
+            assertSame(expectedCard, actualCard);
+            if (desiredSuit != CardSuit.ANY)
+                assertEquals(actualCard.getSuit(), desiredSuit);
+            assertEquals(actualCard.getValue(), desiredVal);
+        }
+
+        // ALCHEMY CARD TESTING
+        // Now we should test if alchemy is allowed to be played when no other card present.
+        // Player should be prompted to set its suit when suit restriction is ANY
+        Player alchemyPlayer = new Player("Alchemy dude");
+        Card alchemyCard1 = new Card(CardType.ALCHEMY, CardSuit.ANY, 1);
+        Card alchemyCard2 = new Card(CardType.ALCHEMY, CardSuit.ANY, 2);
+        alchemyPlayer.getHand().addCards(List.of(alchemyCard1, alchemyCard2));
+
+        String input;
+        if (desiredSuit == CardSuit.ANY){
+            // Ask for first card, specify desired suit (the suit restriction is ANY, so we need to give a suit).
+            input = "1\nSW\n";
+        } else {
+            // If suit restriction isn't ANY, then the suit should be auto-set
+            input = "1\n";
+        }
+        Card actualCard = assertTimeoutPreemptively(Duration.ofSeconds(1),
+                () -> alchemyPlayer.promptPlayCard(desiredSuit, new Scanner(input), new PrintWriter(output))
+        );
+        // We should get our alchemy card as there are no other card types in the hand card here.
+        assertSame(alchemyCard1, actualCard);
+        if (desiredSuit == CardSuit.ANY)
+            // We specified swords so it should have sword suit
+            assertEquals(CardSuit.SWORDS, actualCard.getSuit());
+        else
+            assertEquals(desiredSuit, actualCard.getSuit());
     }
 }

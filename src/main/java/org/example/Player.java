@@ -141,6 +141,9 @@ public class Player {
         }
     }
 
+    public Card promptPlayCard(CardSuit suitRestriction, Scanner input, PrintWriter output){
+    }
+
     public Card promptPlayFirstCard(Scanner input, PrintWriter output) {
         if (hand.getCards().isEmpty()) throw new IllegalStateException("Player's hand is empty!");
 
