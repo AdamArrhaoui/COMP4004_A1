@@ -220,5 +220,9 @@ public class Player {
     }
 
     public void takeInjuryDeckDamage() {
+        if (injuryDeck.getCards().isEmpty()) return;
+        int amountInjury = injuryDeck.getTotalInjury();
+        takeDamage(amountInjury);
+        injuryDeck.removeAllCards();
     }
 }
