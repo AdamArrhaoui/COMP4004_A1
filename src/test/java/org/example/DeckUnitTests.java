@@ -296,4 +296,17 @@ class DeckUnitTests {
         testDeck.removeCard(basicCard);
         assertFalse(testDeck.containsNonAlchemy());
     }
+
+    @Test
+    @DisplayName("U-TEST 051: Deck can be cleared and have every card removed. All the removed cards have their deck reference set to null.")
+    void testClearDeck(){
+        List<Card> cardList = CardGenerator.generateAllGameCards().toList();
+        Deck deck = new Deck(cardList);
+        assertEquals(cardList.size(), deck.getCards().size());
+        deck.removeAllCards();
+        assertEquals(0, deck.getCards().size());
+        for (Card card : cardList){
+            assertNull(card.getDeck());
+        }
+    }
 }

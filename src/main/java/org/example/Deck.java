@@ -127,4 +127,7 @@ public class Deck {
         }
         return false;
     }
+
+    public void removeAllCards() {
+    }
 }
