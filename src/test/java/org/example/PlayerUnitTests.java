@@ -405,4 +405,19 @@ class PlayerUnitTests {
         else
             assertEquals(desiredSuit, actualCard.getSuit());
     }
+
+    @Test
+    @DisplayName("U-TEST 049: Player stores the amount of health they currently have. Player health is initially set to Player class initial health.")
+    void testPlayerStartingHealth(){
+        // Test starting health cannot be set to <= 0
+        assertThrows(IllegalArgumentException.class, () -> Player.setStartingHealth(0));
+        assertThrows(IllegalArgumentException.class, () -> Player.setStartingHealth(-100));
+        Player.setStartingHealth(50);
+        Player player = new Player("Billy");
+        Player.setStartingHealth(100);
+        Player player2 = new Player("Bobby");
+
+        assertEquals(50, player.getHealth());
+        assertEquals(100, player2.getHealth());
+    }
 }

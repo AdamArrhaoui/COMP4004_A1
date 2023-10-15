@@ -9,6 +9,8 @@ public class Player {
     private String name;
     private Deck hand;
     private Deck injuryDeck;
+    private int health;
+    private static int startingHealth = 100;
 
     Player(String name){
         if (name == null || name.isBlank()){
@@ -29,6 +31,18 @@ public class Player {
 
     public Deck getInjuryDeck() {
         return injuryDeck;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public static int getStartingHealth() {
+        return startingHealth;
+    }
+
+    public static void setStartingHealth(int startingHealth) {
+        Player.startingHealth = startingHealth;
     }
 
     public Card promptAnyCard(Scanner input, PrintWriter output) {
