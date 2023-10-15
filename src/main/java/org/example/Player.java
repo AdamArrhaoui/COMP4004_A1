@@ -215,5 +215,7 @@ public class Player {
     }
 
     public void takeDamage(int damage) {
+        if (damage < 0) throw new IllegalArgumentException("Cannot take negative damage!");
+        health = Math.max(0, health-damage);
     }
 }
