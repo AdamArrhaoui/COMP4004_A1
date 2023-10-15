@@ -437,4 +437,31 @@ class PlayerUnitTests {
         player.takeDamage(10000);
         assertEquals(0, player.getHealth());
     }
+
+    @Test
+    @DisplayName("U-TEST 052: Player can take damage from every card in their injury deck, then clear their injury deck.")
+    void testTakeDamageFromInjuryDeck(){
+        int initialHealth = 1000;
+        Player.setStartingHealth(initialHealth);
+        Player player = new Player("Bobby");
+        // If injury deck is empty, player shouldn't take any damage
+        player.takeInjuryDeckDamage();
+        assertEquals(initialHealth, player.getHealth());
+        // Add cards to injury deck
+        Deck fullDeck = Deck.FullDeck();
+        fullDeck.shuffle();
+        fullDeck.dealCardsTo(player.getInjuryDeck(), 10);
+        // Check if damage is properly dealt, and the injury deck is cleared
+        int expectedDamage = player.getInjuryDeck().getTotalInjury();
+        player.takeInjuryDeckDamage();
+        assertEquals(initialHealth - expectedDamage, player.getHealth());
+        assertEquals(0, player.getInjuryDeck().getCards().size());
+        // Leave the player at 1hp
+        player.takeDamage(player.getHealth() - 1);
+        // Give player more injury cards. This is to check that overkill damage doesn't make player health drop below 0
+        fullDeck.dealCardsTo(player.getInjuryDeck(), 10);
+        player.takeInjuryDeckDamage();
+        assertEquals(0, player.getHealth());
+        assertEquals(0, player.getInjuryDeck().getCards().size());
+    }
 }
