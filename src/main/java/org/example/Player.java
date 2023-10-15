@@ -19,6 +19,7 @@ public class Player {
         this.name = name;
         this.hand = new Deck(this);
         this.injuryDeck = new Deck();
+        this.health = startingHealth;
     }
 
     public String getName() {
@@ -42,6 +43,7 @@ public class Player {
     }
 
     public static void setStartingHealth(int startingHealth) {
+        if (startingHealth <= 0) throw new IllegalArgumentException("Starting health must be greater than 0");
         Player.startingHealth = startingHealth;
     }
 
