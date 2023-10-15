@@ -129,5 +129,9 @@ public class Deck {
     }
 
     public void removeAllCards() {
+        cards.removeIf(c -> {
+            c.setDeck(null);
+            return true;
+        });
     }
 }
