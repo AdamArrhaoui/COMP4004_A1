@@ -420,4 +420,21 @@ class PlayerUnitTests {
         assertEquals(50, player.getHealth());
         assertEquals(100, player2.getHealth());
     }
+    @Test
+    @DisplayName("U-TEST 050: Player can take non-negative amount of damage which reduces health. Player health is at minimum 0.")
+    void testDeductPlayerHealth(){
+        int initialHealth = 50;
+        int damageToTake = 20;
+
+        Player.setStartingHealth(initialHealth);
+        Player player = new Player("Billy");
+        // Test player cannot take negative damage
+        assertThrows(IllegalArgumentException.class, () -> player.takeDamage(-1));
+        // Test player taking damage properly
+        player.takeDamage(damageToTake);
+        assertEquals(initialHealth-damageToTake, player.getHealth());
+        // Test player damage cannot dip below 0
+        player.takeDamage(10000);
+        assertEquals(0, player.getHealth());
+    }
 }

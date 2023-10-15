@@ -213,4 +213,7 @@ public class Player {
         }
         return cardToPlay;
     }
+
+    public void takeDamage(int damage) {
+    }
 }
