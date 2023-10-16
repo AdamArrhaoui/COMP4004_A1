@@ -1,11 +1,15 @@
 package org.example;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
+import java.util.Scanner;
 
 public class Melee {
     private List<Player> players;
     private Player playerLeader;
     private int leaderIndex;
+    private CardSuit meleeSuit;
 
     Melee(List<Player> players, Player leader){
         this.leaderIndex = players.indexOf(leader);
@@ -20,5 +24,12 @@ public class Melee {
 
     public Player getPlayerLeader() {
         return playerLeader;
+    }
+
+    public CardSuit getMeleeSuit() {
+        return meleeSuit;
+    }
+
+    public void playFirstCard(Scanner input, PrintWriter output) {
     }
 }

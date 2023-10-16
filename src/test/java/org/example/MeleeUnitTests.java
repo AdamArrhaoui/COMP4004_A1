@@ -4,8 +4,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.Duration;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,5 +46,21 @@ class MeleeUnitTests {
         Melee melee = new Melee(players, expectedLeader);
         assertArrayEquals(players.toArray(), melee.getPlayers().toArray());
         assertSame(expectedLeader, melee.getPlayerLeader());
+    }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 054: Melee class can prompt the leader to play the first card which will determine the melee's suit.")
+    @EnumSource(value = CardSuit.class)
+    void testLeaderPlayFirstCard(CardSuit expectedSuit){
+        for (Player player: players) {
+            player.getHand().addCard(new Card(CardType.ALCHEMY, expectedSuit, 1));
+        }
+        Melee melee = new Melee(players, players.get(0));
+
+        String input = "1\n";
+        StringWriter output = new StringWriter();
+
+        assertTimeoutPreemptively(Duration.ofSeconds(1), () -> melee.playFirstCard(new Scanner(input), new PrintWriter(output)));
+        assertEquals(expectedSuit, melee.getMeleeSuit());
     }
 }
