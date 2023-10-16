@@ -45,8 +45,15 @@ public class Melee {
         if (!playedCards.isEmpty()) throw new IllegalStateException("There have already been cards played!");
         Card chosenCard = playerLeader.promptPlayFirstCard(input, output);
         meleeSuit = chosenCard.getSuit();
+        playedCards.add(chosenCard);
     }
 
     public void playCards(Scanner input, PrintWriter output) {
+        playFirstCard(input, output);
+        for (int i = 1; i < players.size(); i++) {
+            Player currPlayer = players.get((leaderIndex + i) % players.size());
+            Card chosenCard = currPlayer.promptPlayCard(meleeSuit, input, output);
+            if (chosenCard != null) playedCards.add(chosenCard);
+        }
     }
 }
