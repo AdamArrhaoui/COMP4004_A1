@@ -2,11 +2,13 @@ package org.example;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Melee {
     private List<Player> players;
+    private List<Card> playedCards;
     private Player playerLeader;
     private int leaderIndex;
     private CardSuit meleeSuit;
@@ -16,6 +18,7 @@ public class Melee {
         if (this.leaderIndex == -1) throw new IllegalArgumentException("Melee leader not in supplied player list!");
         this.players = players;
         this.playerLeader = leader;
+        this.playedCards = new ArrayList<Card>();
     }
 
     public List<Player> getPlayers() {
@@ -31,5 +34,8 @@ public class Melee {
     }
 
     public void playFirstCard(Scanner input, PrintWriter output) {
+        if (!playedCards.isEmpty()) throw new IllegalStateException("There have already been cards played!");
+        Card chosenCard = playerLeader.promptPlayFirstCard(input, output);
+        meleeSuit = chosenCard.getSuit();
     }
 }
