@@ -25,8 +25,16 @@ public class Melee {
         return players;
     }
 
+    public List<Card> getPlayedCards() {
+        return playedCards;
+    }
+
     public Player getPlayerLeader() {
         return playerLeader;
+    }
+
+    public int getLeaderIndex(){
+        return leaderIndex;
     }
 
     public CardSuit getMeleeSuit() {
@@ -37,5 +45,8 @@ public class Melee {
         if (!playedCards.isEmpty()) throw new IllegalStateException("There have already been cards played!");
         Card chosenCard = playerLeader.promptPlayFirstCard(input, output);
         meleeSuit = chosenCard.getSuit();
+    }
+
+    public void playCards(Scanner input, PrintWriter output) {
     }
 }

@@ -6,12 +6,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,6 +37,10 @@ class MeleeUnitTests {
             player.getHand().removeAllCards();
             player.getInjuryDeck().removeAllCards();
         }
+    }
+
+    private static Stream<Integer> providePlayerIndices(){
+        return IntStream.range(0, players.size()).boxed();
     }
 
     @Test
@@ -62,5 +70,30 @@ class MeleeUnitTests {
 
         assertTimeoutPreemptively(Duration.ofSeconds(1), () -> melee.playFirstCard(new Scanner(input), new PrintWriter(output)));
         assertEquals(expectedSuit, melee.getMeleeSuit());
+    }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 055: Melee class can prompt all players to play cards, in order starting with the leader, and add the played cards to playedCards list.")
+    @MethodSource("providePlayerIndices")
+    void testPlayMeleeCards(int leadPlayerIndex){
+        for (Player player: players) {
+            player.getHand().addCard(new Card(CardSuit.SWORDS, players.indexOf(player) + 1));
+        }
+        Melee melee = new Melee(players, players.get(leadPlayerIndex));
+
+        String input = "1\n".repeat(players.size());
+        StringWriter output = new StringWriter();
+
+        assertTimeoutPreemptively(Duration.ofSeconds(1), () -> melee.playCards(new Scanner(input), new PrintWriter(output)));
+        assertEquals(players.size(), melee.getPlayedCards().size());
+
+        // Make sure that the cards are played in order starting from the leader.
+        for (int i = 0; i < melee.getPlayedCards().size(); i++){
+            int currPlayerIndex = (melee.getLeaderIndex() + i) % players.size();
+            Player currPlayer = players.get(currPlayerIndex);
+            Card expectedCard = currPlayer.getHand().getCards().get(0);
+            Card currCard = melee.getPlayedCards().get(i);
+            assertSame(expectedCard, currCard);
+        }
     }
 }
