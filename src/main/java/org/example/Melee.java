@@ -55,6 +55,18 @@ public class Melee {
             Player currPlayer = players.get((leaderIndex + i) % players.size());
             Card chosenCard = currPlayer.promptPlayCard(meleeSuit, input, output);
             if (chosenCard != null) playedCards.add(chosenCard);
+            else {
+                shamePlayer(currPlayer, input, output);
+            }
         }
+    }
+
+    public void shamePlayer(Player player, Scanner input, PrintWriter output){
+        output.println("\n%s doesn't have any cards to play! Shame on you!".formatted(player.getName()));
+        output.println("Choose a card to discard:");
+        output.flush();
+        player.promptDiscardCard(input, output);
+        player.takeDamage(SHAME_DAMAGE);
+        output.println("You have taken %d damage! Remaining health: %d".formatted(SHAME_DAMAGE, player.getHealth()));
     }
 }
