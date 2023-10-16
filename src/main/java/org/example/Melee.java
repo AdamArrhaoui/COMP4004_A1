@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Melee {
+    static final int SHAME_DAMAGE = 5;
     private List<Player> players;
     private List<Card> playedCards;
     private Player playerLeader;

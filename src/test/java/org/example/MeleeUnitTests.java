@@ -12,7 +12,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -22,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class MeleeUnitTests {
 
     static List<Player> players;
+    static Random random;
+
     @BeforeAll
     static void setupPlayers(){
         players = List.of(
@@ -29,6 +33,7 @@ class MeleeUnitTests {
                 new Player("Bobby"),
                 new Player("Sammy")
         );
+        random = new Random();
     }
 
     @BeforeEach
@@ -95,5 +100,32 @@ class MeleeUnitTests {
             Card currCard = melee.getPlayedCards().get(i);
             assertSame(expectedCard, currCard);
         }
+    }
+
+    @Test
+    @DisplayName("U-TEST 056: If a player cannot play a valid card during a melee, they are asked to discard a card and suffer immediate shame damage.")
+    void testPlayerShame(){
+        // Choose a random player to be shameful (other than first player who is the leader)
+        Player shamedPlayer = players.get(random.nextInt(1, players.size()));
+        for (Player player: players) {
+            CardSuit cardSuit = CardSuit.ARROWS;
+            if (player == shamedPlayer){
+                // Make shamed player have incompatible suit
+                cardSuit = CardSuit.SWORDS;
+            }
+            player.getHand().addCard(new Card(cardSuit, players.indexOf(player) + 1));
+        }
+
+        Melee melee = new Melee(players, players.get(0));
+        String input = "1\n".repeat(players.size() + 1); // add 1 extra input for the shamed player discarding their card
+        StringWriter output = new StringWriter();
+
+        assertTimeoutPreemptively(Duration.ofSeconds(1), () -> melee.playCards(new Scanner(input), new PrintWriter(output)));
+        // playedCards size should be 1 less because shamed player doesn't play a card
+        assertEquals(players.size() - 1, melee.getPlayedCards().size());
+
+        // Make sure shamed player's hand is empty, and their health went down by SHAME_DAMAGE amount
+        assertTrue(shamedPlayer.getHand().getCards().isEmpty());
+        assertEquals(Player.getStartingHealth() - Melee.SHAME_DAMAGE, shamedPlayer.getHealth());
     }
 }
