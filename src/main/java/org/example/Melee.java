@@ -90,6 +90,12 @@ public class Melee {
     }
 
     public Player playFullMelee(Scanner input, PrintWriter output) {
-        return null;
+        playCards(input, output);
+        Player loser = determineLoser();
+        if (loser != null){
+            output.println("\n%s is the loser of the melee!\n".formatted(loser.getName()));
+            loser.getInjuryDeck().addCards(playedCards);
+        }
+        return loser;
     }
 }
