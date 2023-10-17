@@ -161,4 +161,40 @@ class MeleeUnitTests {
         assertEquals(1, nonFeintCards.size());
         assertEquals(leftoverValue, nonFeintCards.get(0).getValue());
     }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 058: Melee class can determine the loser of a melee, which is the player who played the lowest non-feinted card.")
+    @MethodSource("providePlayerIndices")
+    void testGetMeleeLoser(int loserIndex){
+        List<Player> fivePlayerList = new ArrayList<>(players);
+        fivePlayerList.addAll(List.of(
+                new Player("Freddy"),
+                new Player("Bobbington")
+        ));
+
+        // Choose player to lose
+        Player loserPlayer = fivePlayerList.get(loserIndex);
+
+        int cardVal = 2;
+        for (Player player: fivePlayerList) {
+            if (player == loserPlayer){
+                // Make loser player have lowest cardVal
+                cardVal = 1;
+            }
+            player.getHand().addCard(new Card(CardSuit.SWORDS, cardVal));
+            cardVal++;
+        } // Cardvals can repeat if the loserIndex is not the first or last player. We want this behaviour to test feinting
+
+        Melee melee = new Melee(fivePlayerList, fivePlayerList.get(0));
+        String input = "1\n".repeat(5); // All 5 players choose the first card
+        StringWriter output = new StringWriter();
+
+        // Cant determine loser before players play their cards
+        assertThrows(IllegalStateException.class, melee::determineLoser);
+
+        assertTimeoutPreemptively(Duration.ofSeconds(1), () -> melee.playCards(new Scanner(input), new PrintWriter(output)));
+        Player actualLoser = melee.determineLoser();
+        assertNotNull(actualLoser);
+        assertSame(loserPlayer, actualLoser);
+    }
 }

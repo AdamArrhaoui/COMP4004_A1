@@ -79,4 +79,8 @@ public class Melee {
         }
         return playedCards.stream().filter(card -> !duplicateValues.getOrDefault(card.getValue(), false)).toList();
     }
+
+    public Player determineLoser() {
+        return null;
+    }
 }
