@@ -28,7 +28,9 @@ class MeleeUnitTests {
         players = List.of(
                 new Player("Billy"),
                 new Player("Bobby"),
-                new Player("Sammy")
+                new Player("Sammy"),
+                new Player("Freddy"),
+                new Player("Bobbington")
         );
         random = new Random();
     }
@@ -129,11 +131,7 @@ class MeleeUnitTests {
     @Test
     @DisplayName("U-TEST 057: Melee class can perform the feint step and ignore all played cards with equal values, and return a list of non-feinted cards.")
     void testCardFeint(){
-        List<Player> fivePlayerList = new ArrayList<>(players);
-        fivePlayerList.addAll(List.of(
-                new Player("Freddy"),
-                new Player("Bobbington")
-        ));
+
         // Create 6 card deck for testing. Basic cards with same suit, 3 pairs of the same value, so there will always be 1 left over that isn't feinted
         Deck testDeck = new Deck();
         testDeck.addCards(CardGenerator.generateCardStream(2, CardType.BASIC, CardSuit.SWORDS, 1).toList());
@@ -141,13 +139,13 @@ class MeleeUnitTests {
         testDeck.addCards(CardGenerator.generateCardStream(2, CardType.BASIC, CardSuit.SWORDS, 3).toList());
         testDeck.shuffle();
 
-        for (Player player: fivePlayerList) {
+        for (Player player: players) {
             testDeck.dealCardsTo(player.getHand(), 1);
         }
         Card leftoverCard = testDeck.getCards().get(0);
         int leftoverValue = leftoverCard.getValue();
 
-        Melee melee = new Melee(fivePlayerList, fivePlayerList.get(0));
+        Melee melee = new Melee(players, players.get(0));
         String input = "1\n".repeat(5); // All 5 players choose the first card
         StringWriter output = new StringWriter();
 
@@ -166,17 +164,12 @@ class MeleeUnitTests {
     @DisplayName("U-TEST 058: Melee class can determine the loser of a melee, which is the player who played the lowest non-feinted card.")
     @MethodSource("providePlayerIndices")
     void testGetMeleeLoser(int loserIndex){
-        List<Player> fivePlayerList = new ArrayList<>(players);
-        fivePlayerList.addAll(List.of(
-                new Player("Freddy"),
-                new Player("Bobbington")
-        ));
 
         // Choose player to lose
-        Player loserPlayer = fivePlayerList.get(loserIndex);
+        Player loserPlayer = players.get(loserIndex);
 
         int cardVal = 2;
-        for (Player player: fivePlayerList) {
+        for (Player player: players) {
             if (player == loserPlayer){
                 // Make loser player have lowest cardVal
                 cardVal = 1;
@@ -185,7 +178,7 @@ class MeleeUnitTests {
             cardVal++;
         } // Cardvals can repeat if the loserIndex is not the first or last player. We want this behaviour to test feinting
 
-        Melee melee = new Melee(fivePlayerList, fivePlayerList.get(0));
+        Melee melee = new Melee(players, players.get(0));
         String input = "1\n".repeat(5); // All 5 players choose the first card
         StringWriter output = new StringWriter();
 
