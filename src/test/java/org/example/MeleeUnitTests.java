@@ -244,4 +244,29 @@ class MeleeUnitTests {
             assertTrue(player.getHand().getCards().isEmpty());
         }
     }
+
+    @Test
+    @DisplayName("U-TEST 061: If the melee doesn't have a loser, all the cards played by the players are discarded from their hands")
+    void testNoMeleeLoserDiscard(){
+        Deck testDeck = new Deck();
+        testDeck.addCards(CardGenerator.generateCardStream(players.size(), CardType.BASIC, CardSuit.SWORDS, 10).toList());
+        testDeck.shuffle();
+
+        for (Player player: players) {
+            testDeck.dealCardsTo(player.getHand(), 1);
+        }
+
+        Melee melee = new Melee(players, players.get(0));
+        String input = "1\n".repeat(5); // All 5 players choose the first card
+        StringWriter output = new StringWriter();
+
+        Player meleeLoser = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> melee.playFullMelee(new Scanner(input), new PrintWriter(output)));
+        assertNull(meleeLoser);
+
+        // Make sure all player's hands and injury decks are empty (They should have the played cards automatically discarded)
+        for (Player player: players) {
+            assertTrue(player.getHand().getCards().isEmpty());
+            assertTrue(player.getInjuryDeck().getCards().isEmpty());
+        }
+    }
 }
