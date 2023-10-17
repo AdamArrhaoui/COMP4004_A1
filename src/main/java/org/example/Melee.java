@@ -1,7 +1,6 @@
 package org.example;
 
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.*;
 
 public class Melee {
@@ -88,5 +87,9 @@ public class Melee {
         Player losingPlayer = minCard.get().getDeck().getPlayerOwner();
         if (losingPlayer == null) throw new IllegalStateException("Losing card doesn't have an owner! How tf...");
         return losingPlayer;
+    }
+
+    public Player playFullMelee(Scanner input, PrintWriter output) {
+        return null;
     }
 }

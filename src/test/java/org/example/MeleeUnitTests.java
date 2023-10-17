@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -212,5 +211,37 @@ class MeleeUnitTests {
 
         Player actualLoser = assertDoesNotThrow(melee::determineLoser);
         assertNull(actualLoser);
+    }
+
+    @ParameterizedTest
+    @DisplayName("U-TEST 060: Melee class can perform all melee steps, determine the loser, moves all the played cards into the loser's injuryDeck, then return the loser")
+    @MethodSource("providePlayerIndices")
+    void testAllMeleeSteps(int loserIndex){
+        // Choose player to lose
+        Player loserPlayer = players.get(loserIndex);
+
+        int cardVal = 2;
+        for (Player player: players) {
+            if (player == loserPlayer){
+                // Make loser player have lowest cardVal
+                cardVal = 1;
+            }
+            player.getHand().addCard(new Card(CardSuit.SWORDS, cardVal));
+            cardVal++;
+        }
+
+        Melee melee = new Melee(players, players.get(0));
+        String input = "1\n".repeat(5); // All 5 players choose the first card
+        StringWriter output = new StringWriter();
+
+        Player meleeLoser = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> melee.playFullMelee(new Scanner(input), new PrintWriter(output)));
+        assertNotNull(meleeLoser);
+        // All played cards should be in the loserPlayer's injury deck, including any feinted ones
+        assertEquals(players.size(), loserPlayer.getInjuryDeck().getCards().size());
+
+        // All player hands should be empty after playing their only card
+        for (Player player: players) {
+            assertTrue(player.getHand().getCards().isEmpty());
+        }
     }
 }
