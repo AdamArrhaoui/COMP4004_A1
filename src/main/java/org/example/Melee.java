@@ -2,9 +2,7 @@ package org.example;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Melee {
     static final int SHAME_DAMAGE = 5;
@@ -71,6 +69,14 @@ public class Melee {
     }
 
     public List<Card> feintStep() {
-        return null;
+        if (playedCards.isEmpty()) throw new IllegalStateException("Cannot feint before anyone played any cards!");
+        Map<Integer, Boolean> duplicateValues = new HashMap<>();
+        for (Card card : playedCards) {
+            int cardVal = card.getValue();
+            if (duplicateValues.putIfAbsent(cardVal, false) != null) {
+                duplicateValues.put(cardVal, true);
+            }
+        }
+        return playedCards.stream().filter(card -> !duplicateValues.getOrDefault(card.getValue(), false)).toList();
     }
 }
