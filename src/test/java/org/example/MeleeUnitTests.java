@@ -190,4 +190,27 @@ class MeleeUnitTests {
         assertNotNull(actualLoser);
         assertSame(loserPlayer, actualLoser);
     }
+
+    @Test
+    @DisplayName("U-TEST 059: If all player's cards got feinted, the melee will determine that there is no loser (null)")
+    void testAllCardsFeintedNoLoser(){
+        // Make deck of 5 cards, 2 with the value of 1, and 3 with the value of 2. All these cards should feint each other when they are played
+        Deck testDeck = new Deck();
+        testDeck.addCards(CardGenerator.generateCardStream(2, CardType.BASIC, CardSuit.SWORDS, 1).toList());
+        testDeck.addCards(CardGenerator.generateCardStream(3, CardType.BASIC, CardSuit.SWORDS, 2).toList());
+        testDeck.shuffle();
+
+        for (Player player: players) {
+            testDeck.dealCardsTo(player.getHand(), 1);
+        }
+
+        Melee melee = new Melee(players, players.get(0));
+        String input = "1\n".repeat(5); // All 5 players choose the first card
+        StringWriter output = new StringWriter();
+
+        assertTimeoutPreemptively(Duration.ofSeconds(1), () -> melee.playCards(new Scanner(input), new PrintWriter(output)));
+
+        Player actualLoser = assertDoesNotThrow(melee::determineLoser);
+        assertNull(actualLoser);
+    }
 }
