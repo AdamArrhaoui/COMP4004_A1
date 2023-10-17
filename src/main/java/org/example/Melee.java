@@ -84,8 +84,9 @@ public class Melee {
         if (playedCards.isEmpty()) throw new IllegalStateException("Cannot determine loser before anyone played any cards!");
         List<Card> nonFeintCards = feintStep();
         Optional<Card> minCard = nonFeintCards.stream().min(Comparator.comparingInt(Card::getValue));
-        if (minCard.isEmpty()) throw new IllegalStateException("Cannot determine minimum card value!");
+        if (minCard.isEmpty()) return null; // There is no loser! All the cards got feinted!
         Player losingPlayer = minCard.get().getDeck().getPlayerOwner();
+        if (losingPlayer == null) throw new IllegalStateException("Losing card doesn't have an owner! How tf...");
         return losingPlayer;
     }
 }
