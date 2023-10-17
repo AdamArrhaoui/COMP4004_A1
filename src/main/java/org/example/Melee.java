@@ -95,6 +95,12 @@ public class Melee {
         if (loser != null){
             output.println("\n%s is the loser of the melee!\n".formatted(loser.getName()));
             loser.getInjuryDeck().addCards(playedCards);
+        } else {
+            output.println("\nAll cards feinted, it's a draw! There is no loser this time...\n");
+            for (Card card : playedCards) {
+                Deck ownerDeck = card.getDeck();
+                ownerDeck.removeCard(card);
+            }
         }
         return loser;
     }
