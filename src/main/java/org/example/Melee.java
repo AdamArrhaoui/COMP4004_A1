@@ -69,4 +69,8 @@ public class Melee {
         player.takeDamage(SHAME_DAMAGE);
         output.println("You have taken %d damage! Remaining health: %d".formatted(SHAME_DAMAGE, player.getHealth()));
     }
+
+    public List<Card> feintStep() {
+        return null;
+    }
 }

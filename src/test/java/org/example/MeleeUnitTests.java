@@ -12,10 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -127,5 +124,41 @@ class MeleeUnitTests {
         // Make sure shamed player's hand is empty, and their health went down by SHAME_DAMAGE amount
         assertTrue(shamedPlayer.getHand().getCards().isEmpty());
         assertEquals(Player.getStartingHealth() - Melee.SHAME_DAMAGE, shamedPlayer.getHealth());
+    }
+
+    @Test
+    @DisplayName("U-TEST 057: Melee class can perform the feint step and ignore all played cards with equal values, and return a list of non-feinted cards.")
+    void testCardFeint(){
+        List<Player> fivePlayerList = new ArrayList<>(players);
+        fivePlayerList.addAll(List.of(
+                new Player("Freddy"),
+                new Player("Bobbington")
+        ));
+        // Create 6 card deck for testing. Basic cards with same suit, 3 pairs of the same value, so there will always be 1 left over that isn't feinted
+        Deck testDeck = new Deck();
+        testDeck.addCards(CardGenerator.generateCardStream(2, CardType.BASIC, CardSuit.SWORDS, 1).toList());
+        testDeck.addCards(CardGenerator.generateCardStream(2, CardType.BASIC, CardSuit.SWORDS, 2).toList());
+        testDeck.addCards(CardGenerator.generateCardStream(2, CardType.BASIC, CardSuit.SWORDS, 3).toList());
+        testDeck.shuffle();
+
+        for (Player player: fivePlayerList) {
+            testDeck.dealCardsTo(player.getHand(), 1);
+        }
+        Card leftoverCard = testDeck.getCards().get(0);
+        int leftoverValue = leftoverCard.getValue();
+
+        Melee melee = new Melee(fivePlayerList, fivePlayerList.get(0));
+        String input = "1\n".repeat(5); // All 5 players choose the first card
+        StringWriter output = new StringWriter();
+
+        // Cant feint before players play their cards
+        assertThrows(IllegalStateException.class, melee::feintStep);
+
+        assertTimeoutPreemptively(Duration.ofSeconds(1), () -> melee.playCards(new Scanner(input), new PrintWriter(output)));
+        List<Card> nonFeintCards = melee.feintStep();
+
+        assertNotNull(nonFeintCards);
+        assertEquals(1, nonFeintCards.size());
+        assertEquals(leftoverValue, nonFeintCards.get(0).getValue());
     }
 }
