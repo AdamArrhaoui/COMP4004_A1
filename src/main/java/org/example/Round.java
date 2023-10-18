@@ -10,6 +10,7 @@ public class Round {
     private Player currentLeader;
     private int roundNum;
     private Deck gameDeck;
+    private boolean roundIsOver = false;
 
 
     Round(List<Player> players, int roundNum){
@@ -52,5 +53,15 @@ public class Round {
     }
 
     public void endRound(PrintWriter output) {
+        if (roundIsOver) throw new IllegalStateException("Round is already over!");
+        for (Player player : players) {
+            int injury = player.getInjuryDeck().getTotalInjury();
+            output.print("\n%s took %d damage from %d cards in their injury deck! ".formatted(
+                    player.getName(), injury, player.getInjuryDeck().getCards().size()
+            ));
+            player.takeDamage(injury);
+            output.print("Remaining health: %d\n\n".formatted(player.getHealth()));
+        }
+        roundIsOver = true;
     }
 }
