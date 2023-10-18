@@ -8,7 +8,10 @@ public class Round {
     private int roundNum;
 
     Round(List<Player> players, int roundNum){
-
+        if (roundNum <= 0) throw new IllegalArgumentException("Round num cannot be less than or equal to 0!");
+        this.players = players;
+        this.roundNum = roundNum;
+        currentLeader = players.get((roundNum-1)%players.size());
     }
 
     public List<Player> getPlayers() {
