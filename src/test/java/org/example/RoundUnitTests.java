@@ -7,8 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.Duration;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,6 +54,27 @@ class RoundUnitTests {
         }
     }
 
+    void dealCardsSoPlayerLoses(int loserIndex){
+        // Choose player to lose
+        Player loserPlayer = players.get(loserIndex);
+
+        int cardVal = 2;
+        for (Player player: players) {
+            if (player == loserPlayer){
+                // Make loser player have lowest cardVal
+                cardVal = 1;
+            }
+            player.getHand().addCard(new Card(CardSuit.SWORDS, cardVal));
+            cardVal++;
+        }
+    }
+
+    void dealCardsSoNobodyLoses(){
+        for (Player player : players) {
+            player.getHand().addCard(new Card(CardSuit.ARROWS, 10));
+        }
+    }
+
     @ParameterizedTest
     @DisplayName("U-TEST 062: Round class created from ordered list of Players, and round number. Stores initial melee leader based on the round number.")
     @ValueSource(ints = {-1, 0, 1, 2, 3, 4})
@@ -85,5 +110,31 @@ class RoundUnitTests {
         }
         // Make sure round setup can only occur once
         assertThrows(IllegalStateException.class, round::setupRound);
+    }
+
+    @Test
+    @DisplayName("U-TEST 064: Round can play a melee lead by current leader, then set the next leader according to who lost the melee.")
+    void testRoundSingleMelee(){
+        Round round = new Round(players, 1);
+
+        String input = "1\n".repeat(5); // All 5 players choose the first card
+        StringWriter output = new StringWriter();
+
+        // Can't play melee if player's hands are empty
+        assertThrows(IllegalStateException.class, () -> round.playNextMelee(new Scanner(input), new PrintWriter(output)));
+        // Set up so non-leading player loses the melee
+        int loserIndex = random.nextInt(1, players.size());
+        dealCardsSoPlayerLoses(loserIndex);
+
+        // Make sure the round leader changes to the melee loser
+        Player expectedLeader = players.get(loserIndex);
+        assertTimeoutPreemptively(Duration.ofSeconds(1), () -> round.playNextMelee(new Scanner(input), new PrintWriter(output)));
+        assertEquals(expectedLeader, round.getCurrentLeader());
+
+        // Set up so that no player loses (all cards are same value)
+        dealCardsSoNobodyLoses();
+        // Make sure the round leader doesn't change if the melee has no losers
+        assertTimeoutPreemptively(Duration.ofSeconds(1), () -> round.playNextMelee(new Scanner(input), new PrintWriter(output)));
+        assertEquals(expectedLeader, round.getCurrentLeader());
     }
 }

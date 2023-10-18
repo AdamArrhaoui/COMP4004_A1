@@ -1,6 +1,8 @@
 package org.example;
 
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.Scanner;
 
 public class Round {
     static final int MAX_MELEES = 12; // number of melees played per round, also amount of cards that will be dealt.
@@ -38,5 +40,8 @@ public class Round {
             player.getInjuryDeck().removeAllCards();
             gameDeck.dealCardsTo(player.getHand(), MAX_MELEES);
         }
+    }
+
+    public void playNextMelee(Scanner input, PrintWriter output) {
     }
 }
