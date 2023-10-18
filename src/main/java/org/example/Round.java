@@ -43,5 +43,11 @@ public class Round {
     }
 
     public void playNextMelee(Scanner input, PrintWriter output) {
+        if (players.stream().anyMatch(p -> p.getHand().getCards().isEmpty())) throw new IllegalStateException("Can't play melee when players have empty hands!");
+        Melee melee = new Melee(players, currentLeader);
+        Player loser = melee.playFullMelee(input, output);
+        if (loser != null){
+            currentLeader = loser;
+        }
     }
 }
