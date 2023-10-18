@@ -7,6 +7,8 @@ public class Round {
     private List<Player> players;
     private Player currentLeader;
     private int roundNum;
+    private Deck gameDeck;
+
 
     Round(List<Player> players, int roundNum){
         if (roundNum <= 0) throw new IllegalArgumentException("Round num cannot be less than or equal to 0!");
@@ -28,5 +30,13 @@ public class Round {
     }
 
     public void setupRound() {
+        if (gameDeck != null) throw new IllegalStateException("Round has already been setup!");
+        gameDeck = Deck.FullDeck();
+        gameDeck.shuffle();
+        for (Player player: players) {
+            player.getHand().removeAllCards();
+            player.getInjuryDeck().removeAllCards();
+            gameDeck.dealCardsTo(player.getHand(), MAX_MELEES);
+        }
     }
 }
