@@ -66,6 +66,25 @@ public class Round {
     }
 
     public List<Player> playAllMelees(Scanner input, PrintWriter output) {
+        if (roundIsOver) throw new IllegalStateException("Round is already over!");
+        if (players.stream().anyMatch(p -> p.getHand().getCards().size() < MAX_MELEES)) throw new IllegalStateException("Can't play melee when players dont have enough cards in their hands!");
+
+        for (int i = 0; i < MAX_MELEES; i++) {
+            playNextMelee(input, output);
+            Player earlyLoser = checkForEarlyLoser();
+            if (earlyLoser != null) return List.of(earlyLoser);
+        }
+        endRound(output);
+        List<Player> losers = players.stream().filter(p -> p.getHealth() <= 0).toList();
+        return losers;
+    }
+
+    private Player checkForEarlyLoser(){
+        for (Player player : players) {
+            if (player.getHealth() <= 0){
+                return player;
+            }
+        }
         return null;
     }
 }
