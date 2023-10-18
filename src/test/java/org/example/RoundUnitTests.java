@@ -22,6 +22,7 @@ class RoundUnitTests {
 
     @BeforeAll
     static void setupPlayers(){
+        Player.setStartingHealth(Player.DEFAULT_STARTING_HEALTH);
         players = List.of(
                 new Player("Billy"),
                 new Player("Bobby"),
@@ -47,8 +48,13 @@ class RoundUnitTests {
         }
     }
 
-    void dealCardsToPlayerInjuryDecks(int n){
+    void dealCardsToPlayerInjuryDecks(int n) {
+        dealCardsToPlayerInjuryDecks(n, false);
+    }
+
+    void dealCardsToPlayerInjuryDecks(int n, boolean shuffle){
         Deck fullDeck = Deck.FullDeck();
+        if (shuffle) fullDeck.shuffle();
         for (Player player: players) {
             fullDeck.dealCardsTo(player.getInjuryDeck(), n);
         }
@@ -72,6 +78,13 @@ class RoundUnitTests {
     void dealCardsSoNobodyLoses(){
         for (Player player : players) {
             player.getHand().addCard(new Card(CardSuit.ARROWS, 10));
+        }
+    }
+
+    void setAllPlayersStartingHealth(int health){
+        Player.setStartingHealth(health);
+        for (Player player : players) {
+            player.setHealth(health);
         }
     }
 
@@ -136,5 +149,31 @@ class RoundUnitTests {
         // Make sure the round leader doesn't change if the melee has no losers
         assertTimeoutPreemptively(Duration.ofSeconds(1), () -> round.playNextMelee(new Scanner(input), new PrintWriter(output)));
         assertEquals(expectedLeader, round.getCurrentLeader());
+    }
+
+    @Test
+    @DisplayName("U-TEST 065: Round can end, dealing and displaying the number of injury points suffered by each player in this round and their remaining health.")
+    void testRoundEnd(){
+        setAllPlayersStartingHealth(1000);
+        Round round = new Round(players, 1);
+        StringWriter output = new StringWriter();
+
+        dealCardsToPlayerInjuryDecks(3, true);
+        round.endRound(new PrintWriter(output));
+
+        // round can only be ended once
+        assertThrows(IllegalStateException.class, () -> round.endRound(new PrintWriter(output)));
+
+        output.flush();
+        String roundOutput = output.toString();
+        for (Player player : players) {
+            int playerInjury = player.getInjuryDeck().getTotalInjury();
+            int expectedHealth = Player.getStartingHealth() - playerInjury;
+            assertEquals(expectedHealth, player.getHealth());
+            // Make sure the player's name, injury, and remaining health is output
+            assertTrue(roundOutput.contains(player.getName()));
+            assertTrue(roundOutput.contains(Integer.toString(playerInjury)));
+            assertTrue(roundOutput.contains(Integer.toString(player.getHealth())));
+        }
     }
 }

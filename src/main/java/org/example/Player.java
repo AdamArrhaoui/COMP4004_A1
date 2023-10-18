@@ -6,11 +6,12 @@ import java.util.Scanner;
 import java.util.StringJoiner;
 
 public class Player {
+    static final int DEFAULT_STARTING_HEALTH = 100;
     private String name;
     private Deck hand;
     private Deck injuryDeck;
     private int health;
-    private static int startingHealth = 100;
+    private static int startingHealth = DEFAULT_STARTING_HEALTH;
 
     Player(String name){
         if (name == null || name.isBlank()){
@@ -36,6 +37,10 @@ public class Player {
 
     public int getHealth() {
         return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public static int getStartingHealth() {

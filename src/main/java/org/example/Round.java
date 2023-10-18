@@ -50,4 +50,7 @@ public class Round {
             currentLeader = loser;
         }
     }
+
+    public void endRound(PrintWriter output) {
+    }
 }
