@@ -3,6 +3,7 @@ package org.example;
 import java.util.List;
 
 public class Round {
+    static final int MAX_MELEES = 12; // number of melees played per round, also amount of cards that will be dealt.
     private List<Player> players;
     private Player currentLeader;
     private int roundNum;
@@ -24,5 +25,8 @@ public class Round {
 
     public int getRoundNum() {
         return roundNum;
+    }
+
+    public void setupRound() {
     }
 }
