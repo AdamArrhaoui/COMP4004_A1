@@ -176,4 +176,34 @@ class RoundUnitTests {
             assertTrue(roundOutput.contains(Integer.toString(player.getHealth())));
         }
     }
+
+    @Test
+    @DisplayName("U-TEST 066: Round can play all melees, and optionally return a list of players who lost the game.")
+    void testPlayFullRound(){
+        setAllPlayersStartingHealth(100);
+        // Manually setup player cards. Make random player lose each time
+        for (int i = 0; i < Round.MAX_MELEES; i++) {
+            dealCardsSoPlayerLoses(random.nextInt(players.size()));
+        }
+
+        Round round = new Round(players, 1);
+
+        String input = "1\n".repeat(players.size() * Round.MAX_MELEES); // All players choose the first card, each player plays MAX_MELEES times
+        StringWriter output = new StringWriter();
+
+        List<Player> losers = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> round.playAllMelees(new Scanner(input), new PrintWriter(output)));
+
+        assertNotNull(losers);
+        if (losers.isEmpty()){
+            // Make sure all players still have health
+            assertFalse(losers.stream().anyMatch(p -> p.getHealth() <= 0));
+        } else {
+            // Make sure all players with 0 health are in losers list
+            for (Player player : players){
+                assertTrue((player.getHealth() <= 0) == losers.contains(player));
+            }
+        }
+        // Can't play round when the round is already over
+        assertThrows(IllegalStateException.class, () -> round.playAllMelees(new Scanner(input), new PrintWriter(output)));
+    }
 }

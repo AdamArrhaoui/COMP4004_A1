@@ -64,4 +64,8 @@ public class Round {
         }
         roundIsOver = true;
     }
+
+    public List<Player> playAllMelees(Scanner input, PrintWriter output) {
+        return null;
+    }
 }
