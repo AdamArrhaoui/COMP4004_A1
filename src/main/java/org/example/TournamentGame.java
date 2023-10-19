@@ -1,9 +1,8 @@
 package org.example;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class TournamentGame {
     static final int MIN_PLAYERS = 3;
@@ -43,5 +42,26 @@ public class TournamentGame {
     }
 
     public void announceResults(PrintWriter output) {
+        List<Player> nonLosers = players.stream()
+                .filter(player -> player.getHealth()!=0)
+                .sorted(Comparator.comparingInt(Player::getHealth).reversed())
+                .toList();
+        output.println();
+
+        if(nonLosers.isEmpty()){
+            output.println("All the players have died! There are no winners!");
+        } else {
+            int winningHealth = nonLosers.get(0).getHealth();
+            List<Player> winners = nonLosers.stream().filter(player -> player.getHealth() == winningHealth).toList();
+            if (winners.size() == 1){
+                output.println("The winner is %s!".formatted(winners.get(0).getName()));
+            } else {
+                output.print("The winners are: ");
+                for (int i = 0; i < winners.size()-1; i++) {
+                    output.print("%s, ".formatted(winners.get(i).getName()));
+                }
+                output.println("and %s!".formatted(winners.get(winners.size()-1).getName()));
+            }
+        }
     }
 }
