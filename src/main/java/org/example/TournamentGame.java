@@ -41,4 +41,7 @@ public class TournamentGame {
             players.add(new Player(nameStr));
         }
     }
+
+    public void announceResults(PrintWriter output) {
+    }
 }
