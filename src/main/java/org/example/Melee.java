@@ -47,9 +47,11 @@ public class Melee {
     }
 
     public void playCards(Scanner input, PrintWriter output) {
+        output.println("\n\n%s is the leader! They play the first card!".formatted(playerLeader.getName()));
         playFirstCard(input, output);
         for (int i = 1; i < players.size(); i++) {
             Player currPlayer = players.get((leaderIndex + i) % players.size());
+            output.println("It's %s's turn to play a card!".formatted(currPlayer.getName()));
             Card chosenCard = currPlayer.promptPlayCard(meleeSuit, input, output);
             if (chosenCard != null) playedCards.add(chosenCard);
             else {
@@ -60,7 +62,6 @@ public class Melee {
 
     public void shamePlayer(Player player, Scanner input, PrintWriter output){
         output.println("\n%s doesn't have any cards to play! Shame on you!".formatted(player.getName()));
-        output.println("Choose a card to discard:");
         output.flush();
         player.promptDiscardCard(input, output);
         player.takeDamage(SHAME_DAMAGE);
@@ -90,10 +91,18 @@ public class Melee {
     }
 
     public Player playFullMelee(Scanner input, PrintWriter output) {
+        output.println("\n\nIt's melee time!\nCurrent player hands:\n");
+        printAllPlayerHands(output);
+
         playCards(input, output);
+
+        output.println("\nHere are all the cards played this melee:");
+        output.println(Card.listToString(playedCards));
+
         Player loser = determineLoser();
         if (loser != null){
-            output.println("\n%s is the loser of the melee!\n".formatted(loser.getName()));
+            int meleeInjury = playedCards.stream().mapToInt(Card::getInjuryPoints).sum();
+            output.println("\n%s is the loser of the melee! They gain %d injury points!".formatted(loser.getName(), meleeInjury));
             loser.getInjuryDeck().addCards(playedCards);
         } else {
             output.println("\nAll cards feinted, it's a draw! There is no loser this time...\n");
@@ -103,5 +112,11 @@ public class Melee {
             }
         }
         return loser;
+    }
+
+    public void printAllPlayerHands(PrintWriter output){
+        for (Player player : players){
+            player.printPlayerHand(output);
+        }
     }
 }

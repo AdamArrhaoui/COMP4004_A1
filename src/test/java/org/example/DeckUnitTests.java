@@ -266,7 +266,8 @@ class DeckUnitTests {
         //System.out.println(fullHandString);
         String[] splitHandString = fullHandString.split("\n");
         Scanner cardTypeScanner = new Scanner(splitHandString[1].replace("│", ""));
-        Scanner cardSuitScanner = new Scanner(splitHandString[2].replace("│", ""));
+        //remove ANSI escape sequences (it gets confused from me trying to add color)
+        Scanner cardSuitScanner = new Scanner(splitHandString[2].replace("│", "").replaceAll("\u001B\\[[\\d;]*[^\\d;]",""));
         Scanner cardValScanner= new Scanner(splitHandString[3].replace("│", ""));
 
         for (Card card: testDeck.getCards()) {

@@ -48,10 +48,10 @@ public class Card {
         return String.format("""
                 ╭────╮
                 │%2.2s  │
-                │ %2.2s │
+                │ %s%2.2s\033[0m │
                 │  %02d│
                 ╰────╯
-                """, type.toString(), suit.getSymbol(), value);
+                """, type.toString(), suit.getCol(), suit.getSymbol(), value);
     }
 
     public static String listToString(Collection<Card> cards){

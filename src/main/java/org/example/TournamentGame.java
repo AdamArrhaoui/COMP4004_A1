@@ -120,6 +120,7 @@ public class TournamentGame {
                 output.println("and %s!".formatted(winners.get(winners.size()-1).getName()));
             }
         }
+        output.flush();
     }
 
     public void playRound(Scanner input, PrintWriter output){
@@ -129,6 +130,8 @@ public class TournamentGame {
     public void playRound(Scanner input, PrintWriter output, Deck gameDeck) {
         if (gameOver) throw new IllegalStateException("Game is already over!");
         currentRound = new Round(players, ++roundsPlayed);
+        output.println("\n\nIt's time for round %s!\n".formatted(roundsPlayed));
+        printAllPlayerHealth(output);
         if (gameDeck == null){
             currentRound.setupRound();
         } else {
@@ -136,8 +139,14 @@ public class TournamentGame {
         }
         List<Player> losers = currentRound.playAllMelees(input, output);
         if (!losers.isEmpty()){
-            announceResults(output);
             gameOver = true;
+        }
+    }
+
+    public void printAllPlayerHealth(PrintWriter output){
+        output.println("Current Player's Health: ");
+        for (Player player : players){
+            output.println("%10s:%4d".formatted(player.getName(), player.getHealth()));
         }
     }
 }

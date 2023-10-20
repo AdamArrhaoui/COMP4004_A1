@@ -51,8 +51,16 @@ public class Player {
         if (startingHealth <= 0) throw new IllegalArgumentException("Starting health must be greater than 0");
         Player.startingHealth = startingHealth;
     }
+    public void printPlayerHand(PrintWriter output){
+        output.println("%s's hand: ".formatted(name));
+        output.println(hand.getCardsString());
+    }
 
-    public Card promptAnyCard(Scanner input, PrintWriter output) {
+    public Card promptAnyCard(Scanner input, PrintWriter output){
+        return promptAnyCard(input, output, "");
+    }
+
+    public Card promptAnyCard(Scanner input, PrintWriter output, String prompt) {
         if (hand.getCards().isEmpty()) return null;
         // Build string that marks 1-based card indices for the user to choose.
         StringJoiner stringJoiner = new StringJoiner(" || ", "| ", " |");
@@ -63,9 +71,12 @@ public class Player {
 
         int selectedIdx = 0;
         while (selectedIdx == 0){
-            output.println(hand.getCardsString());
+            if (!prompt.isEmpty())
+                output.println(prompt);
+            printPlayerHand(output);
             output.println(stringJoiner.toString());
             output.print("Select a card index: ");
+            output.flush();
             int intInput = 0;
             try{
                 String inputStr = input.nextLine().strip();
@@ -84,7 +95,8 @@ public class Player {
 
     public Card promptDiscardCard(Scanner input, PrintWriter output) {
         if (hand.getCards().isEmpty()) return null;
-        Card cardToDiscard = promptAnyCard(input, output);
+        Card cardToDiscard = promptAnyCard(input, output, "Please choose a card to discard: ");
+        output.println("%s discarded:\n%s".formatted(name, cardToDiscard));
         hand.removeCard(cardToDiscard);
         return cardToDiscard;
     }
@@ -100,7 +112,7 @@ public class Player {
 
         CardSuit selectedSuit = null;
         while (selectedSuit == null){
-            output.println("Select a suit (type its name or number): ");
+            output.println("\nSelect a suit (type its name or number): ");
             output.println(promptStringJoiner);
             output.print("Your choice: ");
             output.flush();
@@ -133,7 +145,7 @@ public class Player {
     public Integer promptCardValue(Scanner input, PrintWriter output) {
         int selectedVal = 0;
         while (selectedVal == 0){
-            output.print("Select a card value (between %d and %d): ".formatted(Card.MIN_VALUE, Card.MAX_VALUE));
+            output.print("\nSelect a card value (between %d and %d): ".formatted(Card.MIN_VALUE, Card.MAX_VALUE));
             output.flush();
 
             String strInput = input.nextLine().replaceAll("\\s", "");
@@ -173,11 +185,10 @@ public class Player {
             }
         }
 
-        boolean containsNonAlchemy = hand.containsNonAlchemy();
+        boolean containsNonAlchemy = hand.containsNonAlchemy() && hand.containsSuit(suitRestriction);
         Card chosenCard = null;
         while (chosenCard == null){
-            output.println("Choose a card with %s suit:".formatted(suitRestriction.toString()));
-            chosenCard = promptAnyCard(input, output);
+            chosenCard = promptAnyCard(input, output, "Choose a card with %s (%s%s\033[0m) suit:".formatted(suitRestriction.toString(), suitRestriction.getCol(), suitRestriction.getSymbol()));
 
             if (chosenCard.getType() == CardType.ALCHEMY && containsNonAlchemy) {
                 output.println("\nYou must choose non-alchemy card if you have one!\n");
@@ -194,6 +205,7 @@ public class Player {
             }
             promptFillCardInfo(chosenCard, input, output);
         }
+        output.println("%s played:\n%s".formatted(name, chosenCard));
         return chosenCard;
     }
 
@@ -202,8 +214,7 @@ public class Player {
 
         Card cardToPlay = null;
         while (cardToPlay == null){
-            output.println("Choose the first card to play!");
-            Card chosenCard = promptAnyCard(input, output);
+            Card chosenCard = promptAnyCard(input, output, "Choose the first card to play!");
             if (chosenCard.getType() == CardType.ALCHEMY){
                 if (hand.containsNonAlchemy()){
                     output.println("\nYou can't choose an Alchemy card when you have non-Alchemy cards in your hand!\n");
@@ -216,6 +227,7 @@ public class Player {
                 cardToPlay = chosenCard;
             }
         }
+        output.println("%s played:\n%s".formatted(name, cardToPlay));
         return cardToPlay;
     }
 
