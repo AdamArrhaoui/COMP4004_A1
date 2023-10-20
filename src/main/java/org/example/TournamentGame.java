@@ -122,6 +122,22 @@ public class TournamentGame {
         }
     }
 
+    public void playRound(Scanner input, PrintWriter output){
+        playRound(input, output, null);
+    }
+
     public void playRound(Scanner input, PrintWriter output, Deck gameDeck) {
+        if (gameOver) throw new IllegalStateException("Game is already over!");
+        currentRound = new Round(players, ++roundsPlayed);
+        if (gameDeck == null){
+            currentRound.setupRound();
+        } else {
+            currentRound.setupRound(gameDeck, false);
+        }
+        List<Player> losers = currentRound.playAllMelees(input, output);
+        if (!losers.isEmpty()){
+            announceResults(output);
+            gameOver = true;
+        }
     }
 }
