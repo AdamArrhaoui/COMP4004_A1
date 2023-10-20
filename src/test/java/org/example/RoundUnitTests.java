@@ -110,7 +110,7 @@ class RoundUnitTests {
         dealCardsToPlayerInjuryDecks(5);
 
         Round round = new Round(players, 1);
-        assertDoesNotThrow(round::setupRound);
+        assertDoesNotThrow(() -> round.setupRound());
 
         // Make new full ordered deck to test if player hands are actually shuffled
         Deck fullTestDeck = Deck.FullDeck();

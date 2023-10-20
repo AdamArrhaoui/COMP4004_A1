@@ -34,8 +34,12 @@ public class Round {
 
     public void setupRound() {
         if (gameDeck != null) throw new IllegalStateException("Round has already been setup!");
-        gameDeck = Deck.FullDeck();
-        gameDeck.shuffle();
+        setupRound(Deck.FullDeck(), true);
+    }
+
+    public void setupRound(Deck newDeck, boolean shuffle) {
+        gameDeck = newDeck;
+        if (shuffle) gameDeck.shuffle();
         for (Player player: players) {
             player.getHand().removeAllCards();
             player.getInjuryDeck().removeAllCards();

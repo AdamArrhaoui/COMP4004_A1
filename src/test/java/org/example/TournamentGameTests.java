@@ -25,10 +25,9 @@ class TournamentGameTests {
     static Random random = new Random();
 
     private static TournamentGame setupGame(int numPlayers){
-        TournamentGame game = new TournamentGame(numPlayers);
         StringWriter output = new StringWriter();
         String input = String.join("\n", playerNames.stream().limit(numPlayers).toList());
-        game.setupPlayers(new Scanner(input), new PrintWriter(output));
+        TournamentGame game = new TournamentGame(new Scanner(input), new PrintWriter(output), numPlayers);
         return game;
     }
 
@@ -36,17 +35,18 @@ class TournamentGameTests {
     @DisplayName("U-TEST 067: TournamentGame class can be created with valid number of players, can be prompted for valid player names for each player.")
     @ValueSource(ints = {-1, 0, 2, 3, 4, 5, 6, 7})
     void testGamePlayerSetupPrompts(int numPlayers){
+        StringWriter output = new StringWriter();
+
         if (numPlayers < TournamentGame.MIN_PLAYERS || numPlayers > TournamentGame.MAX_PLAYERS){
-            assertThrows(IllegalArgumentException.class, () -> new TournamentGame(numPlayers));
+            String badInput = String.join("\n", playerNames.stream().toList());
+            assertThrows(IllegalArgumentException.class, () -> new TournamentGame(new Scanner(badInput), new PrintWriter(output), numPlayers));
             return;
         }
-        TournamentGame game = new TournamentGame(numPlayers);
-        assertEquals(numPlayers, game.getNumPlayers());
-
-        StringWriter output = new StringWriter();
         String input = String.join("\n", playerNames.stream().limit(numPlayers).toList());
 
-        assertTimeoutPreemptively(Duration.ofSeconds(1), () -> game.setupPlayers(new Scanner(input), new PrintWriter(output)));
+        TournamentGame game = assertTimeoutPreemptively(Duration.ofSeconds(1), () -> new TournamentGame(new Scanner(input), new PrintWriter(output), numPlayers));
+
+        assertEquals(numPlayers, game.getNumPlayers());
 
         assertNotNull(game.getPlayers());
         assertEquals(numPlayers, game.getPlayers().size());
