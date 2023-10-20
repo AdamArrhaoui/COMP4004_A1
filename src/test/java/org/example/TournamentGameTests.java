@@ -94,4 +94,31 @@ class TournamentGameTests {
             assertEquals(winners.contains(player), finalOut.contains(player.getName()));
         }
     }
+
+    @Test
+    @DisplayName("U-TEST 069: TournamentGame class can play through a round and keep track of number of rounds played.")
+    void testPlayRound(){
+        StringWriter output = new StringWriter();
+        Player.setStartingHealth(100);
+        TournamentGame game = setupGame(TournamentGame.MAX_PLAYERS);
+
+        assertEquals(0, game.getRoundsPlayed());
+
+        // Play round with pre-set deck where all cards can always be played. This is to make play inputs easier
+        List<Card> cardList = CardGenerator.generateBasicCards(80, CardSuit.SWORDS).toList();
+        Deck gameDeck = new Deck(cardList);
+        String input = "1\n".repeat(TournamentGame.MAX_PLAYERS * Round.MAX_MELEES); // All players choose the first card every time for every melee in the round
+        game.playRound(new Scanner(input), new PrintWriter(output), gameDeck);
+
+        assertEquals(1, game.getRoundsPlayed());
+
+        // If any of the players are dead, the game is over
+        if (game.getPlayers().stream().anyMatch(p -> p.getHealth() == 0)){
+            assertEquals(true, game.isGameOver());
+            // Can't play the game when it's already over!
+            assertThrows(IllegalStateException.class, () -> game.playRound(new Scanner(input), new PrintWriter(output), new Deck(cardList)));
+        } else {
+            assertEquals(false, game.isGameOver());
+        }
+    }
 }

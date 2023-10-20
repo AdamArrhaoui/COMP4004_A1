@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -9,6 +10,9 @@ public class TournamentGame {
     static final int MAX_PLAYERS = 5;
     private int numPlayers;
     private List<Player> players;
+    private int roundsPlayed = 0;
+    private Round currentRound;
+    private boolean gameOver = false;
 
     /**
      * New game. Uses input and output to prompt for number of players and player names.
@@ -46,6 +50,14 @@ public class TournamentGame {
 
     public List<Player> getPlayers() {
         return players;
+    }
+
+    public int getRoundsPlayed() {
+        return roundsPlayed;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 
     public void setupPlayers(Scanner input, PrintWriter output) {
@@ -108,5 +120,8 @@ public class TournamentGame {
                 output.println("and %s!".formatted(winners.get(winners.size()-1).getName()));
             }
         }
+    }
+
+    public void playRound(Scanner input, PrintWriter output, Deck gameDeck) {
     }
 }
