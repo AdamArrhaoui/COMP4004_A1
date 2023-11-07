@@ -77,22 +77,8 @@ public class TournamentGame {
     }
 
     public void promptPlayerCount(Scanner input, PrintWriter output) {
-        int selectedVal = 0;
-        while (selectedVal == 0){
-            output.print("How many players? (between %d and %d): ".formatted(MIN_PLAYERS, MAX_PLAYERS));
-            output.flush();
-
-            String strInput = input.nextLine().replaceAll("\\s", "");
-            try {
-                int selection = Integer.parseInt(strInput);
-                if (selection >= MIN_PLAYERS && selection <= MAX_PLAYERS) {
-                    selectedVal = selection;
-                }
-            } catch (NumberFormatException ignored) {}
-            if (selectedVal == 0){
-                output.println("\nInvalid input! Please enter a number within range.\n");
-            }
-        }
+        PromptHelper promptHelper = new PromptHelper(input, output);
+        int selectedVal = promptHelper.promptPositiveInt("How many players?", MIN_PLAYERS, MAX_PLAYERS);
         this.numPlayers = selectedVal;
     }
 
