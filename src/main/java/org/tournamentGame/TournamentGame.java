@@ -1,9 +1,7 @@
-package org.example;
+package org.tournamentGame;
 
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class TournamentGame {
     static final int MIN_PLAYERS = 3;

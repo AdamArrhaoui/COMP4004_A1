@@ -1,4 +1,4 @@
-package org.example;
+package org.tournamentGame;
 
 public enum CardSuit {
     ANY         ("??", "\033[97m"),

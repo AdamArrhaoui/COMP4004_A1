@@ -1,4 +1,4 @@
-package org.example;
+package org.tournamentGame;
 
 import java.util.EnumSet;
 import java.util.List;

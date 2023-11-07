@@ -1,4 +1,4 @@
-package org.example;
+package org.tournamentGame;
 
 import java.util.Collection;
 import java.util.List;
