@@ -82,6 +82,17 @@ public class TournamentGame {
         this.numPlayers = selectedVal;
     }
 
+    /**
+     * Prompts for and sets player starting health. Must be called BEFORE creating the game if it is to take effect.
+     * @param input
+     * @param output
+     */
+    public static void promptStartingHealth(Scanner input, PrintWriter output) {
+        PromptHelper promptHelper = new PromptHelper(input, output);
+        int selectedVal = promptHelper.promptPositiveInt("Set the player's starting health", 1, 1000);
+        Player.setStartingHealth(selectedVal);
+    }
+
     public void announceResults(PrintWriter output) {
         List<Player> nonLosers = players.stream()
                 .filter(player -> player.getHealth()!=0)
