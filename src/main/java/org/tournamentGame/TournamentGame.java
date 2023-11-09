@@ -4,8 +4,8 @@ import java.io.PrintWriter;
 import java.util.*;
 
 public class TournamentGame {
-    static final int MIN_PLAYERS = 3;
-    static final int MAX_PLAYERS = 5;
+    public static final int MIN_PLAYERS = 3;
+    public static final int MAX_PLAYERS = 5;
     private int numPlayers;
     private List<Player> players;
     private int roundsPlayed = 0;

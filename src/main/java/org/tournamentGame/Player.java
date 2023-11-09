@@ -13,7 +13,7 @@ public class Player {
     private int health;
     private static int startingHealth = DEFAULT_STARTING_HEALTH;
 
-    Player(String name){
+    public Player(String name){
         if (name == null || name.isBlank()){
             throw new IllegalArgumentException("New player name cannot be null or blank!");
         }

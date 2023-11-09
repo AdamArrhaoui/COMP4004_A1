@@ -11,7 +11,7 @@ public class Melee {
     private int leaderIndex;
     private CardSuit meleeSuit;
 
-    Melee(List<Player> players, Player leader){
+    public Melee(List<Player> players, Player leader){
         this.leaderIndex = players.indexOf(leader);
         if (this.leaderIndex == -1) throw new IllegalArgumentException("Melee leader not in supplied player list!");
         this.players = players;
