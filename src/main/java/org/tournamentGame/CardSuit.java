@@ -12,6 +12,16 @@ public enum CardSuit {
         this.symbol = symbol;
         this.col = col;
     }
+
+    public static CardSuit fromCode(String code) {
+        for (CardSuit suit : values()) {
+            if (suit.name().startsWith(code.toUpperCase())) {
+                return suit;
+            }
+        }
+        throw new IllegalArgumentException("No matching CardSuit for code: " + code);
+    }
+
     public String getSymbol(){
         return symbol;
     }
