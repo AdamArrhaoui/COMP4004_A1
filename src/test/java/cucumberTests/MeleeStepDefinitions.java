@@ -9,12 +9,17 @@ import org.tournamentGame.Player;
 import org.tournamentGame.TournamentGame;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MeleeStepDefinitions {
-    private static ArrayList<Player> players;
-    private static Melee currentMelee;
+    private ArrayList<Player> players;
+    private Melee currentMelee;
     
     @Given("A single melee is started with players named {string}")
     public void SingleMeleePlayers(String playerNames) {
@@ -37,5 +42,20 @@ public class MeleeStepDefinitions {
         assertNotNull("Can't add null card to %s's hand!".formatted(playerName), card);
 
         desiredPlayer.getHand().addCard(card);
+    }
+
+    @When("all players play their first card in the melee")
+    public void allPlayersPlayTheirFirstCardInTheMelee() {
+        assertFalse("Some players don't have a card in their hand!",
+                currentMelee.getPlayers().stream()
+                        .anyMatch(player -> player.getHand().getCards().isEmpty())
+        );
+
+        String input = "1\n".repeat(currentMelee.getPlayers().size());
+        StringWriter output = new StringWriter();
+
+        assertTimeoutPreemptively(Duration.ofSeconds(1), () -> {
+            currentMelee.playCards(new Scanner(input), new PrintWriter(output));
+        });
     }
 }
