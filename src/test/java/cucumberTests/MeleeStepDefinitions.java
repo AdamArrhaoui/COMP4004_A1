@@ -58,4 +58,20 @@ public class MeleeStepDefinitions {
             currentMelee.playCards(new Scanner(input), new PrintWriter(output));
         });
     }
+
+    @Then("the loser of the melee is {string} and takes {int} points of damage")
+    public void theLoserOfTheMeleeIsLoserAndTakesInjuryPointsOfDamage(String expectedLoserName, int expectedInjury) {
+        Player loser = currentMelee.determineLoser();
+        if (expectedLoserName.equals("-")){
+            assertNull(loser);
+            assertEquals("Can't have injury when there is no loser!", 0, expectedInjury);
+            return;
+        } else {
+            assertNotNull("Expected %s to be the loser, but there is no loser!".formatted(expectedLoserName), loser);
+        }
+        assertEquals(expectedLoserName, loser.getName());
+
+        int actualInjury = currentMelee.getPlayedCards().stream().mapToInt(Card::getInjuryPoints).sum();
+        assertEquals(expectedInjury, actualInjury);
+    }
 }
