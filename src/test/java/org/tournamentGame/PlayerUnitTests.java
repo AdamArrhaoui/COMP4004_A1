@@ -360,13 +360,8 @@ class PlayerUnitTests {
                     expectedCard = testPlayer.getHand().getCards().get(0);
                 }
             } else {
-                // MERLIN and APPRENTICE cards
-                if (desiredSuit == CardSuit.ANY){
-                    input = "%d\n%s\n%d\n".formatted(i+1, CardSuit.SWORDS, desiredVal);
-                } else {
-                    // Merlin and Apprentice cards require value to be specified. Suit should be automatically set
-                    input = "%d\n%d\n".formatted(i+1, desiredVal);
-                }
+                // Merlin and Apprentice cards require value to be specified. Suit should be automatically set
+                input = "%d\n%d\n".formatted(i+1, desiredVal);
             }
             Card actualCard = assertTimeoutPreemptively(Duration.ofSeconds(1),
                     () -> testPlayer.promptPlayCard(desiredSuit, new Scanner(input), new PrintWriter(output))
@@ -386,24 +381,14 @@ class PlayerUnitTests {
         Card alchemyCard2 = new Card(CardType.ALCHEMY, CardSuit.ANY, 2);
         alchemyPlayer.getHand().addCards(List.of(alchemyCard1, alchemyCard2));
 
-        String input;
-        if (desiredSuit == CardSuit.ANY){
-            // Ask for first card, specify desired suit (the suit restriction is ANY, so we need to give a suit).
-            input = "1\nSW\n";
-        } else {
-            // If suit restriction isn't ANY, then the suit should be auto-set
-            input = "1\n";
-        }
+        String input= "1\n";
+
         Card actualCard = assertTimeoutPreemptively(Duration.ofSeconds(1),
                 () -> alchemyPlayer.promptPlayCard(desiredSuit, new Scanner(input), new PrintWriter(output))
         );
         // We should get our alchemy card as there are no other card types in the hand card here.
         assertSame(alchemyCard1, actualCard);
-        if (desiredSuit == CardSuit.ANY)
-            // We specified swords so it should have sword suit
-            assertEquals(CardSuit.SWORDS, actualCard.getSuit());
-        else
-            assertEquals(desiredSuit, actualCard.getSuit());
+        assertEquals(desiredSuit, actualCard.getSuit());
     }
 
     @Test
