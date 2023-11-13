@@ -1,4 +1,4 @@
-package org.example;
+package org.tournamentGame;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

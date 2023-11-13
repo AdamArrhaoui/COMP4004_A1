@@ -1,4 +1,4 @@
-package org.example;
+package org.tournamentGame;
 
 import java.io.PrintWriter;
 import java.util.EnumSet;
@@ -13,7 +13,7 @@ public class Player {
     private int health;
     private static int startingHealth = DEFAULT_STARTING_HEALTH;
 
-    Player(String name){
+    public Player(String name){
         if (name == null || name.isBlank()){
             throw new IllegalArgumentException("New player name cannot be null or blank!");
         }
@@ -69,27 +69,14 @@ public class Player {
             stringJoiner.add(String.format("\033[32m%-2d\033[0m", i));
         }
 
-        int selectedIdx = 0;
-        while (selectedIdx == 0){
-            if (!prompt.isEmpty())
-                output.println(prompt);
-            printPlayerHand(output);
-            output.println(stringJoiner.toString());
-            output.print("Select a card index: ");
-            output.flush();
-            int intInput = 0;
-            try{
-                String inputStr = input.nextLine().strip();
-                intInput = Integer.parseInt(inputStr);
-                if (intInput < 1 || intInput > hand.getCards().size()) throw new IndexOutOfBoundsException();
-            } catch (Exception e) {
-                output.printf("\nInvalid input! Please enter a number between 1 and %d\n", hand.getCards().size());
-                continue;
-            } finally {
-                output.println();
-            }
-            selectedIdx = intInput;
-        }
+        if (!prompt.isEmpty())
+            output.println(prompt);
+        printPlayerHand(output);
+        output.println(stringJoiner.toString());
+
+        PromptHelper promptHelper = new PromptHelper(input, output);
+
+        int selectedIdx = promptHelper.promptPositiveInt("Select a card index", 1, hand.getCards().size());
         return hand.getCards().get(selectedIdx - 1);
     }
 
@@ -143,28 +130,14 @@ public class Player {
     }
 
     public Integer promptCardValue(Scanner input, PrintWriter output) {
-        int selectedVal = 0;
-        while (selectedVal == 0){
-            output.print("\nSelect a card value (between %d and %d): ".formatted(Card.MIN_VALUE, Card.MAX_VALUE));
-            output.flush();
-
-            String strInput = input.nextLine().replaceAll("\\s", "");
-            try {
-                int selection = Integer.parseInt(strInput);
-                if (selection >= Card.MIN_VALUE && selection <= Card.MAX_VALUE) {
-                    selectedVal = selection;
-                }
-            } catch (NumberFormatException ignored) {}
-            if (selectedVal == 0){
-                output.println("\nInvalid input! Please enter a number within range.\n");
-            }
-        }
+        PromptHelper promptHelper = new PromptHelper(input, output);
+        int selectedVal = promptHelper.promptPositiveInt("Select a card value", Card.MIN_VALUE, Card.MAX_VALUE);
         return selectedVal;
     }
 
-    public void promptFillCardInfo(Card card, Scanner input, PrintWriter output){
+    public void promptFillCardInfo(Card card, boolean keepAny, Scanner input, PrintWriter output){
         // Only prompt card's suit if the card's suit is ANY
-        if (card.getSuit() == CardSuit.ANY){
+        if (card.getSuit() == CardSuit.ANY && !keepAny){
             CardSuit newSuit = promptCardSuit(input, output);
             card.setSuit(newSuit);
         }
@@ -172,6 +145,10 @@ public class Player {
             int newValue = promptCardValue(input, output);
             card.setValue(newValue);
         }
+    }
+
+    public void promptFillCardInfo(Card card, Scanner input, PrintWriter output){
+        promptFillCardInfo(card, false, input, output);
     }
 
     public Card promptPlayCard(CardSuit suitRestriction, Scanner input, PrintWriter output){
@@ -203,7 +180,7 @@ public class Player {
                 }
                 chosenCard.setSuit(suitRestriction);
             }
-            promptFillCardInfo(chosenCard, input, output);
+            promptFillCardInfo(chosenCard, suitRestriction==CardSuit.ANY, input, output);
         }
         output.println("%s played:\n%s".formatted(name, chosenCard));
         return chosenCard;

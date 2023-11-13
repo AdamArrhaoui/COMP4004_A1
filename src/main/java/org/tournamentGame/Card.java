@@ -1,4 +1,4 @@
-package org.example;
+package org.tournamentGame;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +25,7 @@ public class Card {
      * @param s non-ANY suit
      * @param val non-zero value
      */
-    Card(CardSuit s, int val) {
+    public Card(CardSuit s, int val) {
         setType(CardType.BASIC);
         setSuit(s);
         setValue(val);
@@ -37,7 +37,7 @@ public class Card {
      * @param s non-null CardSuit
      * @param val card value
      */
-    Card(CardType t, CardSuit s, int val){
+    public Card(CardType t, CardSuit s, int val){
         setType(t);
         setSuit(s);
         setValue(val);

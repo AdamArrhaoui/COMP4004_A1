@@ -1,13 +1,11 @@
-package org.example;
+package org.tournamentGame;
 
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class TournamentGame {
-    static final int MIN_PLAYERS = 3;
-    static final int MAX_PLAYERS = 5;
+    public static final int MIN_PLAYERS = 3;
+    public static final int MAX_PLAYERS = 5;
     private int numPlayers;
     private List<Player> players;
     private int roundsPlayed = 0;
@@ -79,23 +77,20 @@ public class TournamentGame {
     }
 
     public void promptPlayerCount(Scanner input, PrintWriter output) {
-        int selectedVal = 0;
-        while (selectedVal == 0){
-            output.print("How many players? (between %d and %d): ".formatted(MIN_PLAYERS, MAX_PLAYERS));
-            output.flush();
-
-            String strInput = input.nextLine().replaceAll("\\s", "");
-            try {
-                int selection = Integer.parseInt(strInput);
-                if (selection >= MIN_PLAYERS && selection <= MAX_PLAYERS) {
-                    selectedVal = selection;
-                }
-            } catch (NumberFormatException ignored) {}
-            if (selectedVal == 0){
-                output.println("\nInvalid input! Please enter a number within range.\n");
-            }
-        }
+        PromptHelper promptHelper = new PromptHelper(input, output);
+        int selectedVal = promptHelper.promptPositiveInt("How many players?", MIN_PLAYERS, MAX_PLAYERS);
         this.numPlayers = selectedVal;
+    }
+
+    /**
+     * Prompts for and sets player starting health. Must be called BEFORE creating the game if it is to take effect.
+     * @param input
+     * @param output
+     */
+    public static void promptStartingHealth(Scanner input, PrintWriter output) {
+        PromptHelper promptHelper = new PromptHelper(input, output);
+        int selectedVal = promptHelper.promptPositiveInt("Set the player's starting health", 1, 1000);
+        Player.setStartingHealth(selectedVal);
     }
 
     public void announceResults(PrintWriter output) {
