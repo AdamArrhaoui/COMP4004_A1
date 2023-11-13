@@ -135,9 +135,9 @@ public class Player {
         return selectedVal;
     }
 
-    public void promptFillCardInfo(Card card, Scanner input, PrintWriter output){
+    public void promptFillCardInfo(Card card, boolean keepAny, Scanner input, PrintWriter output){
         // Only prompt card's suit if the card's suit is ANY
-        if (card.getSuit() == CardSuit.ANY){
+        if (card.getSuit() == CardSuit.ANY && !keepAny){
             CardSuit newSuit = promptCardSuit(input, output);
             card.setSuit(newSuit);
         }
@@ -145,6 +145,10 @@ public class Player {
             int newValue = promptCardValue(input, output);
             card.setValue(newValue);
         }
+    }
+
+    public void promptFillCardInfo(Card card, Scanner input, PrintWriter output){
+        promptFillCardInfo(card, false, input, output);
     }
 
     public Card promptPlayCard(CardSuit suitRestriction, Scanner input, PrintWriter output){
@@ -176,7 +180,7 @@ public class Player {
                 }
                 chosenCard.setSuit(suitRestriction);
             }
-            promptFillCardInfo(chosenCard, input, output);
+            promptFillCardInfo(chosenCard, suitRestriction==CardSuit.ANY, input, output);
         }
         output.println("%s played:\n%s".formatted(name, chosenCard));
         return chosenCard;
